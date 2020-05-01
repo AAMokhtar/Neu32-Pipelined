@@ -9,11 +9,10 @@ public class MainControl {
 	 * output: hashtable of the following format:
 	 * 
 	 */
-	public static Hashtable<String, String> controlSignals(String opcode){
+	public static Hashtable<String, String> controlSignals(String opcode) throws DatapathException{
 		
 		if(opcode.length()!=4) {
-			System.out.println("Opcode field's length is invalid!");
-			return null;
+			throw new DatapathException("Opcode field's length is invalid!");
 		}
 		
 		Hashtable<String,String> ret = new Hashtable<String,String>();
@@ -136,7 +135,7 @@ public class MainControl {
 				ret.put("RegWrite","0");
 				ret.put("MemToReg","x");
 				break;
-			default: System.out.println("Invalid opcode. Return value: NULL"); return null;
+			default: throw new DatapathException("Invalid opcode entered @MainControl"); 
 		}
 		
 		return ret;

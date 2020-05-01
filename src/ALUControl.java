@@ -8,11 +8,10 @@ public class ALUControl {
 	 * 
 	 */
 	
-	public static String ALUSignals(String funct, String ALUop) {
+	public static String ALUSignals(String funct, String ALUop) throws DatapathException {
 		
 		if(ALUop.length()!=3 || funct.length()!=13) {
-			System.out.println("Length of inputs is incorrect. Return value: NULL");
-			return null;
+			throw new DatapathException("Length of either funct or ALUop is incorrect as passed to ALUSignals.");
 		}
 		
 		String ret = "";
@@ -31,11 +30,10 @@ public class ALUControl {
 					case "0000000000010":ret = "0010";break;
 					case "0000000000011":ret = "0011";break;
 					case "0000000000100":ret = "0111";break;
-					default: System.out.println("Invalid funct field! Return value: NULL"); return null;
+					default: throw new DatapathException("Invalid funct field @ALUControl!"); 
 				}
 				break;
-			default: System.out.println("invalid ALUOp! Return value: NULL"); return null;
-		}
+			default: throw new DatapathException("invalid ALUOp @ALUControl!");}
 
 		return ret;
 	}

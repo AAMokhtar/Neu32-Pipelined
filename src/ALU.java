@@ -9,7 +9,7 @@ public class ALU {
 	}
 	
 	
-	public static void ALUEvaluator (String Op,int Operand1, int Operand2){
+	public static void ALUEvaluator (String Op,int Operand1, int Operand2) throws DatapathException{
 		String opname ="";
 		int output=0;
 		
@@ -47,7 +47,7 @@ public class ALU {
 			output = srl(Operand1, Operand2);
 			
 		default: 
-			System.out.println("Illegal operation."); return;
+			throw new DatapathException("Illegal operation @ ALU."); 
 		}
 		
 		

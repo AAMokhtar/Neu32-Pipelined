@@ -6,7 +6,7 @@ public class BranchControl {
 	 * output: the 2 bit string that will go into the 4x1 mux
 	 */
 	
-	public String branchSignals(String jump, String branch, String Gflag, String Zflag) {
+	public String branchSignals(String jump, String branch, String Gflag, String Zflag) throws DatapathException {
 		
 		String ret = "";
 		
@@ -27,7 +27,7 @@ public class BranchControl {
 		}
 		
 		else {
-			System.out.println("Illegal state: branching problematic! Return value: NULL"); ret = null;
+			throw new DatapathException("Illegal branching state! Your combinationn of jump, branch, Gflag, and Zflag is invalid! @BranchControl!");
 		}
 		
 		return ret;
