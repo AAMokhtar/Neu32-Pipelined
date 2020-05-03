@@ -27,7 +27,7 @@ public class BranchControl {
 		}
 		
 		else {
-			throw new DatapathException("Illegal branching state! Your combinationn of jump, branch, Gflag, and Zflag is invalid! @BranchControl!");
+			ret = "00";
 		}
 		
 		return ret;
