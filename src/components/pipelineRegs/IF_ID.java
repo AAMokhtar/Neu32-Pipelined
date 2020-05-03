@@ -93,7 +93,7 @@ public class IF_ID {
         if (reverse) incoming.put("Instruction",String.format("%032d", 0)); //NOP add, $0, $0, $0
         else outgoing.put("Instruction",String.format("%032d", 0));
 
-        formatter.AssemblyStages[1] = "addi $0, $0, $0 (NOP)";
+        formatter.AssemblyStages[1] = "add $0, $0, $0 (NOP)";
     }
 
 

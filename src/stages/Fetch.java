@@ -19,12 +19,16 @@ public class Fetch {
          *  we assume that the branch is not taken. if that's incorrect, flush
          *  the current instruction (the one in IF).
          */
-        String instruction = instruction = Cache.load(PC.get32bitPC());
+        String instruction = Cache.load(PC.get32bitPC());
 
         //PC + 4
         incPC();
 
+        //pass the outputs to the next stage
         IF_ID.write(instruction,PC.getPC());
+
+        if (Flush == '1')
+            IF_ID.flushOutgoing();
 
         printStage(instruction,PC.get32bitPC()); //printing
     }

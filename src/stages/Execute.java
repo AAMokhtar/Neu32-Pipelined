@@ -10,7 +10,6 @@ import other.formatter;
 import other.operations;
 
 import java.util.HashMap;
-import java.util.Hashtable;
 
 public class Execute {
     public static void run() throws DatapathException {
@@ -32,13 +31,15 @@ public class Execute {
         String ForwardB = "00" /*TODO: get signal from the forwarding unit*/;
 
         //=======================set the operands=============================
-        String mux1 = (String) MUX.mux4in(ReadData1, 0/*TODO: MEM/WR value*/, EX_MEM.ALUResult(),
+
+        //the forwarding unit decides the source of the operands
+        String mux1 = (String) MUX.mux4in(ReadData1, 0/*TODO: MEM/WB value*/, EX_MEM.ALUResult(),
                 0,ForwardA.charAt(0)+"",ForwardA.charAt(1)+"");
 
         int operand1 = Integer.parseInt(mux1,2);
 
 
-        String mux2 = (String) MUX.mux4in(ReadData2, 0/*TODO: MEM/WR value*/, EX_MEM.ALUResult(),
+        String mux2 = (String) MUX.mux4in(ReadData2, 0/*TODO: MEM/WB value*/, EX_MEM.ALUResult(),
                 0,ForwardB.charAt(0)+"",ForwardB.charAt(1)+"");
         int operand2 = Integer.parseInt(mux2,2);
 
@@ -53,7 +54,9 @@ public class Execute {
 
         String ZFlag = ALUresult == 0?"1":"0";
 
+        //pass the outputs to the next stage
         EX_MEM.write(Integer.toBinaryString(ALUresult),ZFlag,input.get("rd"),input);
+
         printStage(ZFlag,input.get("BranchAddress"),String.format("%32s", Integer.toBinaryString(ALUresult))
                         .replace(' ', '0'), String.format("%32s", Integer.toBinaryString(operand1))
                         .replace(' ', '0')

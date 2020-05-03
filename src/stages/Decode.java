@@ -55,10 +55,11 @@ public class Decode {
                          RegisterFile.readdata(rt)};
 
         //extend the immediate
-        int opInt = Integer.parseInt(opCode,2);
         immediate = Signextend.signeextend(immediate);
 
-        if (operations.Complement(immediate) > 32) immediate = "00000000000000000000000000100000";
+        //if shift amount > 32, set it to 32
+        if ((opCode.equals("0011") || opCode.equals("0100")) && operations.Complement(immediate) > 32)
+            immediate = "00000000000000000000000000100000";
 
         //calculate branch address
         int branchAddress = incrementedPC + (operations.Complement(immediate) << 2);
@@ -70,15 +71,6 @@ public class Decode {
          */
         int jumpAddress = Integer.parseInt(input.get("PC").substring(0,3) + target,2);
 
-        //zero flag
-        //TODO: Data hazard. get the most recent values of rs,rt.
-        String ZFlag = opInt == 7?Comparator.compare("=",values[0],values[1]):"1";
-        //greater than flag
-        //TODO: Data hazard. get the most recent values of rs,rt.
-        String GFlag = opInt == 8?Comparator.compare(">",values[0],values[1]):"0";
-
-        //get branch signals
-        String branchSignals = BranchControl.branchSignals(control.get("Jump"),control.get("Branch"),GFlag,ZFlag);
 
         /*
          * Because the values in a branch comparison are needed during ID but may be produced later in time,
@@ -90,15 +82,32 @@ public class Decode {
          * appears at the end of the MEM cycle but is needed at the beginning of ID for the branch.
          */
 
+        //zero flag
+        //TODO: Data hazard. get the most recent values of rs,rt. (check previous comment)
+        String ZFlag = Comparator.compare("=",values[0],values[1]);
+
+        //greater than flag
+        //TODO: Data hazard. get the most recent values of rs,rt.
+        String GFlag = Comparator.compare(">",values[0],values[1]);
+
+        //get branch signals
+        String branchSignals = BranchControl.branchSignals(control.get("Jump"),control.get("Branch"),GFlag,ZFlag);
+
+        //special case for bne (branch if both flags are 0
+        if (opCode.equals("0111") && branchSignals.equals("00")) branchSignals = "01";
+
+
         //decide branch
         int newPC = (int) MUX.mux4in(incrementedPC,branchAddress,branchAddress,jumpAddress,
                 branchSignals.charAt(0)+"",branchSignals.charAt(1)+"");
 
+        //if we are branching to the current PC address, don't take the branch
         if (newPC != incrementedPC){
             PC.setPC(newPC);
-            Fetch.Flush = 1;
+            Fetch.Flush = '1';
         }
-        else Fetch.Flush = 0;
+
+        else Fetch.Flush = '0';
 
 
         /*
@@ -111,7 +120,7 @@ public class Decode {
          * locations in the ID/EX register. It simplifies the design.
          */
 
-
+        //pass the outputs to the next stage
         ID_EX.write(values[0], values[1], immediate,String.format("%32s", Integer.toBinaryString(branchAddress))
                 .replace(' ', '0'), rs, rt, rd, funct, control);
 
