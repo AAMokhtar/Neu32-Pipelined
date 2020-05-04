@@ -1,8 +1,20 @@
 package components;
 
-import other.DatapathException;
+/**
+ * equality/sign test unit.
+ * used inside the ID stage to decide
+ * branches.
+ */
 
 public class Comparator {
+
+    /**
+     *
+     * @param operation =, > (no other operations are supported)
+     * @param r1 register value (most likely rs)
+     * @param r2 register value (most likely rt)
+     * @return comparison operation == true
+     */
 
     public static String compare(String operation, String r1, String r2){
         int op1 = Integer.parseInt(r1,2);

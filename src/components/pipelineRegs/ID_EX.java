@@ -81,7 +81,7 @@ public class ID_EX {
 
     }
 
-    //ANY READ OTHER THAN EX
+
     public static HashMap<String,String> EX_Control(){
         HashMap<String,String> ret = new HashMap<>();
 
@@ -96,7 +96,7 @@ public class ID_EX {
         return ret;
     }
 
-    //ANY READ OTHER THAN EX
+
     public static HashMap<String,String> MEM_Control(){
         HashMap<String,String> ret = new HashMap<>();
 
@@ -113,7 +113,6 @@ public class ID_EX {
         return ret;
     }
 
-    //ANY READ OTHER THAN EX
     public static HashMap<String,String> WB_Control(){
         HashMap<String,String> ret = new HashMap<>();
 
@@ -128,40 +127,33 @@ public class ID_EX {
         return ret;
     }
 
-    //ANY READ OTHER THAN EX
     public static String rs(){
         if (reverse) return incoming.get("rs");
         else return outgoing.get("rs");
     }
 
-    //ANY READ OTHER THAN EX
     public static String rt(){
         if (reverse) return incoming.get("rt");
         else return outgoing.get("rt");
     }
 
-    //ANY READ OTHER THAN EX
     public static String rd(){
         if (reverse) return incoming.get("rd");
         else return outgoing.get("rd");
     }
 
-    //ANY READ OTHER THAN EX
     public static String funct(){
         if (reverse) return incoming.get("funct");
         else return outgoing.get("funct");
     }
 
-    //ANY READ OTHER THAN EX
     public static String BranchAddress(){
         if (reverse) return incoming.get("BranchAddress");
         else return outgoing.get("BranchAddress");
     }
 
-    //read = get the previous cycle's values
+    //read = get the previous cycle's values + reverse (ONLY USED BY THE NEXT STAGE)
     public static HashMap<String, String> read(){
-
-        //reset the signal for the next instruction
 
         if (reverse){
             reverse = false;

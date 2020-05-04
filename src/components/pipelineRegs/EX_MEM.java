@@ -1,7 +1,6 @@
 package components.pipelineRegs;
 
 import java.util.HashMap;
-import java.util.Hashtable;
 
 public class EX_MEM {
     /**
@@ -59,7 +58,6 @@ public class EX_MEM {
 
     }
 
-    //ANY READ OTHER THAN EX
     public static HashMap<String,String> MEM_Control(){
         HashMap<String,String> ret = new HashMap<>();
 
@@ -76,7 +74,6 @@ public class EX_MEM {
         return ret;
     }
 
-    //ANY READ OTHER THAN EX
     public static HashMap<String,String> WB_Control(){
         HashMap<String,String> ret = new HashMap<>();
 
@@ -91,28 +88,24 @@ public class EX_MEM {
         return ret;
     }
 
-    //ANY READ OTHER THAN EX
     public static String ALUResult(){
         if (reverse) return incoming.get("ALUResult");
         else return outgoing.get("ALUResult");
     }
 
-    //ANY READ OTHER THAN EX
     public static String ZFlag(){
         if (reverse) return incoming.get("ZFlag");
         else return outgoing.get("ZFlag");
     }
 
-    //ANY READ OTHER THAN EX
     public static String rd(){
         if (reverse) return incoming.get("rd");
         else return outgoing.get("rd");
     }
 
-    //read = get the previous cycle's values
+    //read = get the previous cycle's values + reverse (ONLY USED BY THE NEXT STAGE)
+    //TODO: FOR KHEYAR: USE read() AT THE START OF THE MEMORY STAGE
     public static HashMap<String, String> read(){
-
-        //reset the signal for the next instruction
 
         if (reverse){
             reverse = false;

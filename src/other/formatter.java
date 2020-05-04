@@ -3,7 +3,18 @@ package other;
 import java.util.Arrays;
 
 public class formatter {
+
+    /**
+     * array containing the assembly instruction
+     * in every stage.
+     */
     public static String[] AssemblyStages =nops(5);
+
+    /**
+     *
+     * @param instruction the instruction that recently entered the pipeline.
+     * Function: it advances all the instructions in AssemblyStages by 1 stage.
+     */
     public static void advance(String instruction){
         for (int i = AssemblyStages.length - 2; i >= 0; i--) {
             AssemblyStages[i+1] = AssemblyStages[i];
@@ -11,6 +22,12 @@ public class formatter {
         String temp = getAssembly(instruction);
         AssemblyStages[0] = (checknop(temp)?temp+" (NOP)":temp);
     }
+
+    /**
+     *
+     * @param instruction as a 32 bit binary string.
+     * @return assembly instruction as a string.
+     */
 
     public static String getAssembly(String instruction){
         String op = instruction.substring(0,4);
@@ -76,16 +93,36 @@ public class formatter {
         return assembly.toString();
     }
 
+    /**
+     *
+     * @param in any string (most likely a 32 bit binary string)
+     * @return the same string with spaces every 4 characters.
+     * example:
+     *  in: 10000101
+     *  out: 1000 0101
+     */
+
     public static String formatOut(String in){
         return in.replaceAll("....", "$0 ");
     }
 
+    /**
+     *
+     * @param size array size
+     * @return String[size] containing "add $0, $0, $0 (NOP)"
+     *
+     */
     public static String[] nops(int size){
         String[] ret  = new String[size];
         Arrays.fill(ret,"add $0, $0, $0 (NOP)");
         return ret;
     }
 
+    /**
+     *
+     * @param assembly assembly instruction
+     * @return assembly is a NOP (add $0, $0, $0) == true
+     */
     public static boolean checknop(String assembly){
 
         return assembly.equals("add $0, $0, $0 (NOP)") || assembly.equals("add $0, $0, $0");

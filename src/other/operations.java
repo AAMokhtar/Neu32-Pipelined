@@ -1,8 +1,15 @@
 package other;
 
+/**
+ * any operations needed in any of the stages
+ */
 public class operations {
 
-    //gets the 2's complement of a binary string
+    /**
+     *
+     * @param Bin 32 bit binary string
+     * @return the 2's complement of Bin as an integer
+     */
     public static int Complement(String Bin){
         StringBuilder res = new StringBuilder();
 

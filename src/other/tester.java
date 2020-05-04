@@ -5,9 +5,13 @@ import stages.Decode;
 import stages.Execute;
 import stages.Fetch;
 
+/**
+ * used for testing the datapath you may delete this when we are done
+ */
 public class tester {
     public static void main(String[] args) throws DatapathException {
-        String[] instructions = {"00000000100010000110000000000000", //add 0000-00001-00010-00011-0000000000000
+
+        String[] program = {     "00000000100010000110000000000000", //add 0000-00001-00010-00011-0000000000000
                                  "00000001100100001010000000000001", //sub 0000-00011-00100-00101-0000000000001
                                  "00000010100110001110000000000010", //and 0000-00101-00110-00111-0000000000010
                                  "00000011101000010010000000000011", //mul 0000-00111-01000-01001-0000000000011
@@ -23,14 +27,21 @@ public class tester {
                                  "10010000000000000000000000010100"}; //jump 1001-0000000000000000000000010100
 
 
-        VonNeumannMemory.addinstructions(instructions);
+        //load the program into memory
+            VonNeumannMemory.addinstructions(program);
 
-        for (int i = 0; i < 17; i++) {
+        //we need 18 cycles to fully execute all of the 14 instructions
+        for (int i = 0; i < 18; i++) {
             System.out.print("After clock-cycle: "+(i+1)+":\n\n");
             cycle();
         }
     }
 
+    /**
+     * simulates a clock cycle.
+     * executes the stages sequentially
+     * @throws DatapathException
+     */
     public static void cycle() throws DatapathException {
         Fetch.run();
         Decode.run();

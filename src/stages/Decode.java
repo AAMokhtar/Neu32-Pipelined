@@ -13,118 +13,127 @@ import java.util.Hashtable;
 public class Decode {
 
     public static void run() throws DatapathException {
-        //get all inputs from IF_ID
-        HashMap<String, String> input = IF_ID.read();
-        String instruction = input.get("Instruction");
-        int incrementedPC = Integer.parseInt(input.get("PC"), 2);
 
-        //divide the instruction
-        String opCode = instruction.substring(0,4);
+        //=========================get all inputs from IF_ID============================
+            HashMap<String, String> input = IF_ID.read();
+            String instruction = input.get("Instruction");
+            int incrementedPC = Integer.parseInt(input.get("PC"), 2);
 
-        String rs = instruction.substring(4,9);
-        String rt = instruction.substring(9,14);
-        String rd = instruction.substring(14,19);
+        //===========================break the instruction down=========================
+            String opCode = instruction.substring(0,4);
 
-        String immediate = instruction.substring(14);
-        String target = instruction.substring(4);
+            String rs = instruction.substring(4,9);
+            String rt = instruction.substring(9,14);
+            String rd = instruction.substring(14,19);
 
-        String funct = instruction.substring(19);
+            String immediate = instruction.substring(14);
+            String target = instruction.substring(4);
 
-        //control signals are NOP initially.
-        Hashtable<String, String> control = new Hashtable<>();
-        control.put("Branch","0");
-        control.put("Jump","0");
-        control.put("DstReg","0");
-        control.put("ALUSrc","0");
-        control.put("ALUop","000");
-        control.put("MemRead","0");
-        control.put("MemWrite","0");
-        control.put("RegWrite","0");
-        control.put("MemToReg","0");
+            String funct = instruction.substring(19);
 
-        //we set the controls according to the hazard detection unit's NOP signal.
+        //======================control signals are NOP initially=======================
+            Hashtable<String, String> control = new Hashtable<>();
+            control.put("Branch","0");
+            control.put("Jump","0");
+            control.put("DstReg","0");
+            control.put("ALUSrc","0");
+            control.put("ALUop","000");
+            control.put("MemRead","0");
+            control.put("MemWrite","0");
+            control.put("RegWrite","0");
+            control.put("MemToReg","0");
+
+        //=====set the controls according to the hazard detection unit's NOP signal=====
             control = (Hashtable<String, String>) MUX.mux2in(MainControl.controlSignals(opCode),
                        control,0/*TODO: HazardDetectionUnit.NOP */);
 
-        //get the correct destination register
-        if (control.get("DstReg").equals("0"))
-            rd = rt;
+        //======================get the correct destination register====================
+            rd = (String) MUX.mux2in(rt,rd,control.get("DstReg").charAt(0) - '0');
 
-        //read the source registers
-        String[] values = {RegisterFile.readdata(rs),
-                         RegisterFile.readdata(rt)};
+        //=========================read the source registers============================
+            String[] values = {RegisterFile.readdata(rs), RegisterFile.readdata(rt)};
 
-        //extend the immediate
-        immediate = Signextend.signeextend(immediate);
+        //============================extend the immediate==============================
+            immediate = Signextend.signeextend(immediate);
 
-        //if shift amount > 32, set it to 32
-        if ((opCode.equals("0011") || opCode.equals("0100")) && operations.Complement(immediate) > 32)
-            immediate = "00000000000000000000000000100000";
+        //====================if shift amount > 32, set it to 32========================
+            /*
+             * previously when sll and srl were R-type instructions, this wasn't an issue,
+             * because the shift amount was 5 bits. Now they're I-type and the immediate(18 bits) is
+             * the shift amount. Shifting 2^18 times in unneeded and can cause performance complications
+             * for the processor (in reality)
+             */
+            if ((opCode.equals("0011") || opCode.equals("0100")) && operations.Complement(immediate) > 32)
+                immediate = "00000000000000000000000000100000";
 
-        //calculate branch address
-        int branchAddress = incrementedPC + (operations.Complement(immediate) << 2);
+        //==========================calculate branch address=============================
+            //branch address is always calculated regardless of the instruction
+            int branchAddress = incrementedPC + (operations.Complement(immediate) << 2);
 
-        /*
-         * calculate jump address:
-         * shift the 28 bit target left by 2 bits and get the
-         * remaining 2 bits from the incremented PC's most left bits
-         */
-        int jumpAddress = Integer.parseInt(input.get("PC").substring(0,3) + target,2);
-
-
-        /*
-         * Because the values in a branch comparison are needed during ID but may be produced later in time,
-         * it is possible that a data hazard can occur and a stall will be needed. For example, if an ALU
-         * instruction immediately preceding a branch produces one of the operands for the comparison in
-         * the branch, a stall will be required, since the EX stage for the ALU instruction will occur after
-         * the ID cycle of the branch. By extension, if a load is immediately followed by a conditional
-         * branch that is on the load result, two stall cycles will be needed, as the result from the load
-         * appears at the end of the MEM cycle but is needed at the beginning of ID for the branch.
-         */
-
-        //zero flag
-        //TODO: Data hazard. get the most recent values of rs,rt. (check previous comment)
-        String ZFlag = Comparator.compare("=",values[0],values[1]);
-
-        //greater than flag
-        //TODO: Data hazard. get the most recent values of rs,rt.
-        String GFlag = Comparator.compare(">",values[0],values[1]);
-
-        //get branch signals
-        String branchSignals = BranchControl.branchSignals(control.get("Jump"),control.get("Branch"),GFlag,ZFlag);
-
-        //special case for bne (branch if both flags are 0
-        if (opCode.equals("0111") && branchSignals.equals("00")) branchSignals = "01";
+        //==========================calculate jump address===============================
+            /*
+             * calculate jump address:
+             * shift the 28 bit target left by 2 bits and get the
+             * remaining 2 bits from the incremented PC's most left bits
+             */
+            int jumpAddress = Integer.parseInt(input.get("PC").substring(0,3) + target,2);
 
 
-        //decide branch
-        int newPC = (int) MUX.mux4in(incrementedPC,branchAddress,branchAddress,jumpAddress,
-                branchSignals.charAt(0)+"",branchSignals.charAt(1)+"");
+        //======================Set the flags needed for branching=======================
 
-        //if we are branching to the current PC address, don't take the branch
-        if (newPC != incrementedPC){
-            PC.setPC(newPC);
-            Fetch.Flush = '1';
-        }
+            /*
+             * Because the values in a branch comparison are needed during ID but may be produced later in time,
+             * it is possible that a data hazard can occur and a stall will be needed. For example, if an ALU
+             * instruction immediately preceding a branch produces one of the operands for the comparison in
+             * the branch, a stall will be required, since the EX stage for the ALU instruction will occur after
+             * the ID cycle of the branch. By extension, if a load is immediately followed by a conditional
+             * branch that is on the load result, two stall cycles will be needed, as the result from the load
+             * appears at the end of the MEM cycle but is needed at the beginning of ID for the branch.
+             */
 
-        else Fetch.Flush = '0';
+            //=======zero flag=======
+            //TODO: Data hazard. get the most recent values of rs,rt. (check previous comment)
+            String ZFlag = Comparator.compare("=",values[0],values[1]);
 
+            //===greater than flag===
+            //TODO: Data hazard. get the most recent values of rs,rt.
+            String GFlag = Comparator.compare(">",values[0],values[1]);
 
-        /*
-         * Any instruction may operate on a single source register, two source
-         * registers, one source register and a sign-extended 32-bit immediate value, a sign-extended 32-bit
-         * immediate value, or no operands. Additionally, we may need the destination register's number if
-         * the instruction requires writing back to a register. We can either prepare only the required
-         * operands for the EX stage based on the opcode or prepare all the operands that might be required
-         * for any opcode. The latter design is simpler, so let's prepare all of them and store them at fixed
-         * locations in the ID/EX register. It simplifies the design.
-         */
+        //================================get branch signals==============================
+            String branchSignals = BranchControl.branchSignals(opCode, control.get("Jump"),control
+                    .get("Branch"),GFlag,ZFlag);
 
-        //pass the outputs to the next stage
-        ID_EX.write(values[0], values[1], immediate,String.format("%32s", Integer.toBinaryString(branchAddress))
-                .replace(' ', '0'), rs, rt, rd, funct, control);
+        //====================================decide branch===============================
+            int newPC = (int) MUX.mux4in(incrementedPC,branchAddress,branchAddress,jumpAddress,
+                    branchSignals.charAt(0)+"",branchSignals.charAt(1)+"");
 
-        printStage(values[0],values[1],immediate,input.get("PC"),rt,rd,control);
+            //if we are branching to the current PC address, don't take the branch
+            if (newPC != incrementedPC){
+                PC.setPC(newPC);
+
+                //flush the pipeline
+                Fetch.Flush = '1';
+            }
+
+            //no branching, set the flush signal to 0 for the next instruction
+            else Fetch.Flush = '0';
+
+        //==========================pass the outputs to the next stage===================
+            /*
+             * Any instruction may operate on a single source register, two source
+             * registers, one source register and a sign-extended 32-bit immediate value, a sign-extended 32-bit
+             * immediate value, or no operands. Additionally, we may need the destination register's number if
+             * the instruction requires writing back to a register. We can either prepare only the required
+             * operands for the EX stage based on the opcode or prepare all the operands that might be required
+             * for any opcode. The latter design is simpler, so let's prepare all of them and store them at fixed
+             * locations in the ID/EX register. It simplifies the design.
+             */
+
+            ID_EX.write(values[0], values[1], immediate,String.format("%32s", Integer.toBinaryString(branchAddress))
+                    .replace(' ', '0'), rs, rt, rd, funct, control);
+
+        //================================print the required output======================
+            printStage(values[0],values[1],immediate,input.get("PC"),rt,rd,control);
     }
 
     public static void printStage(String read1,String read2, String SE, String pc,String rt

@@ -6,6 +6,7 @@ import components.pipelineRegs.IF_ID;
 import other.formatter;
 
 public class Fetch {
+
     /**
      * loads the instruction from the program counter.
      * instruction is set to 0 if we are flushing the pipeline.
@@ -13,24 +14,27 @@ public class Fetch {
     public static char Flush = '0';
 
     public static void run(){
-         String.format("%032d", 0); //NOP add, $0, $0, $0
+        //===============load the instruction from cache===============
+            String instruction = Cache.load(PC.get32bitPC());
 
-        /**
-         *  we assume that the branch is not taken. if that's incorrect, flush
-         *  the current instruction (the one in IF).
-         */
-        String instruction = Cache.load(PC.get32bitPC());
+        //===================increment PC (PC + 4)=====================
+            incPC();
 
-        //PC + 4
-        incPC();
+        //===============pass the outputs to the next stage============
+            IF_ID.write(instruction,PC.getPC());
 
-        //pass the outputs to the next stage
-        IF_ID.write(instruction,PC.getPC());
+        //=======================flushing==============================
+            /*
+             *  we assume that the branch is not taken. if that's incorrect, flush
+             *  the current instruction (the one in IF).
+             * How? replace the instruction inside IF/ID with 0s,
+             * making it a NOP (add $0,$0,$0) instruction.
+             */
+            if (Flush == '1')
+                IF_ID.flushOutgoing();
 
-        if (Flush == '1')
-            IF_ID.flushOutgoing();
-
-        printStage(instruction,PC.get32bitPC()); //printing
+        //==================print the required output==================
+            printStage(instruction,PC.get32bitPC());
     }
 
     public static void incPC(){
