@@ -30,6 +30,9 @@ public class EX_MEM {
         incoming.put("ALUResult", String.format("%032d", 0));
         outgoing.put("ALUResult", String.format("%032d", 0));
 
+        incoming.put("ReadData2", String.format("%032d", 0));
+        outgoing.put("ReadData2", String.format("%032d", 0));
+
         incoming.put("ZFlag", "1");
         outgoing.put("ZFlag", "1");
 
@@ -103,6 +106,11 @@ public class EX_MEM {
         else return outgoing.get("rd");
     }
 
+    public static String ReadData2(){
+        if (reverse) return incoming.get("ReadData2");
+        else return outgoing.get("ReadData2");
+    }
+
     //read = get the previous cycle's values + reverse (ONLY USED BY THE NEXT STAGE)
     //TODO: FOR KHEYAR: USE read() AT THE START OF THE MEMORY STAGE
     public static HashMap<String, String> read(){
@@ -117,10 +125,11 @@ public class EX_MEM {
     }
 
     //write = store the output of ID in incoming (outgoing if the order is reversed)
-    public static void write(String ALUResult,String ZFlag, String rd, HashMap<String, String> control){
+    public static void write(String ALUResult,String ReadData2, String ZFlag, String rd, HashMap<String, String> control){
         if (reverse) {
             outgoing.put("ALUResult", ALUResult);
             outgoing.put("rd", rd);
+            outgoing.put("ReadData2", ReadData2);
             outgoing.put("ZFlag", ZFlag);
 
             outgoing.put("MemRead", control.get("MemRead"));
@@ -133,6 +142,7 @@ public class EX_MEM {
         else{
             incoming.put("ALUResult", ALUResult);
             incoming.put("rd", rd);
+            incoming.put("ReadData2", ReadData2);
             incoming.put("ZFlag", ZFlag);
 
             incoming.put("MemRead", control.get("MemRead"));
