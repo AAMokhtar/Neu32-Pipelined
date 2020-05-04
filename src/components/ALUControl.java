@@ -1,8 +1,11 @@
+package components;
+
+import other.DatapathException;
 
 public class ALUControl {
 	
 	/*
-	 * returns a String of 4 bits dictating the ALU operation.
+	 * returns a String of 4 bits dictating the components.ALU operation.
 	 * 
 	 * inputs: funct (!3 bits), and ALUop (3 bits)
 	 * 
@@ -10,7 +13,7 @@ public class ALUControl {
 	
 	public static String ALUSignals(String funct, String ALUop) throws DatapathException {
 		
-		if(ALUop.length()!=3 || funct.length()!=13) {
+		if((ALUop.length()!=3 && !ALUop.equals("x"))|| funct.length()!=13) {
 			throw new DatapathException("Length of either funct or ALUop is incorrect as passed to ALUSignals.");
 		}
 		
@@ -18,6 +21,7 @@ public class ALUControl {
 		
 		
 		switch(ALUop) {
+			case "x": ret = "xxxx"; break;
 			case "000": ret = "0000";break;
 			case "010": ret = "0100";break;
 			case "011": ret = "0101";break;
@@ -30,10 +34,10 @@ public class ALUControl {
 					case "0000000000010":ret = "0010";break;
 					case "0000000000011":ret = "0011";break;
 					case "0000000000100":ret = "0111";break;
-					default: throw new DatapathException("Invalid funct field @ALUControl!"); 
+					default: throw new DatapathException("Invalid funct field @components.ALUControl!");
 				}
 				break;
-			default: throw new DatapathException("invalid ALUOp @ALUControl!");}
+			default: throw new DatapathException("invalid ALUOp @components.ALUControl!");}
 
 		return ret;
 	}

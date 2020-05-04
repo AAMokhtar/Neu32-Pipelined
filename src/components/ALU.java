@@ -1,20 +1,20 @@
-import java.util.Scanner;
+package components;
+
+import other.DatapathException;
 
 public class ALU {
 	
 	private static int zflag = 0;
-	
-	public ALU() {
-		
-	}
-	
-	
-	public static void ALUEvaluator (String Op,int Operand1, int Operand2) throws DatapathException{
+
+	public static int ALUEvaluator (String Op,int Operand1, int Operand2) throws DatapathException {
 		String opname ="";
 		int output=0;
 		
 		switch(Op) {
-		
+
+		case "xxxx":
+			output = 0;
+			break;
 		case "0011":
 			opname = "AND";
 			output = ANDOp(Operand1,Operand2);
@@ -42,12 +42,14 @@ public class ALU {
 		case "0101":
 			opname = "SLL";
 			output = sll(Operand1,Operand2);
+			break;
 		case "0110":
 			opname = "SRL";
 			output = srl(Operand1, Operand2);
+			break;
 			
 		default: 
-			throw new DatapathException("Illegal operation @ ALU."); 
+			throw new DatapathException("Illegal operation @ components.ALU.");
 		}
 		
 		
@@ -55,10 +57,11 @@ public class ALU {
 		
 		//display
 		
-		System.out.println("Input: \n1st Operand: "  + Operand1 + "\n2nd Operand: " + Operand2 + "\nOperation: " + Op);
-		System.out.println("\nOutput: \nOperation Name: " + opname + "\n1st Operand: "  + Operand1 + "\n2nd Operand: " + Operand2 
-				+"\nOutput: " + output + "\nZ-Flag Value: " + zflag);
-		
+//		System.out.println("Input: \n1st Operand: "  + Operand1 + "\n2nd Operand: " + Operand2 + "\nOperation: " + Op);
+//		System.out.println("\nOutput: \nOperation Name: " + opname + "\n1st Operand: "  + Operand1 + "\n2nd Operand: " + Operand2
+//				+"\nOutput: " + output + "\nZ-Flag Value: " + zflag);
+
+		return output;
 	}
 
 	
@@ -144,6 +147,6 @@ public class ALU {
 //		System.out.println("Enter the operation AS A BINARY STRING: ");
 //		String binOP = sc.next();
 //		
-//		ALU.ALUEvaluator(binOP,inp1,inp2);
+//		components.ALU.ALUEvaluator(binOP,inp1,inp2);
 //	}
 }

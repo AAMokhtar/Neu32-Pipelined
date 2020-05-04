@@ -1,20 +1,22 @@
+package components;
 
+import java.util.Arrays;
 
 public class VonNeumannMemory {
 	/*
 	 * this means one memory space for both the data and instructions.
 	 * THIS ALSO MEANS ONE ACCESS, EITHER DATA OR INSTRUCTIONS, AT A TIME!! (accessing data & instruction at the same TIME
-	 * => STRUCTURAL HAZARDa!
+	 * => STRUCTURAL HAZARDa! eyy itsa me mario
 	 * since we're allowed to structure it however we want... I'll do the first half as instructions and the second half as data.
 	 * it is BYTE ADDRESSABLE.
 	 * go to cash class
 	 */
 	
-	private static String[] memory= new String[2048];;
+	private static String[] memory= zeros(2048);
 	//private static int lastoccDataByte=-1;
 	private static int firstnonoccInstructionByte=-1;
 	
-	
+
 //	private static void init()
 //	{
 //		for(int i=0;i<2048;i++)
@@ -65,13 +67,13 @@ public class VonNeumannMemory {
 	{
 		//init();
 		int add=Integer.parseInt(address, 2);
-		if(add>1023)
+		if(add<1021)
 		{
 			String result=memory[add];
 			result=result+memory[add+1];
 			result=result+memory[add+2];
 			result=result+memory[add+3];
-			System.out.println(result);
+//			System.out.println(result);
 			return result;
 		}
 		System.out.println("load in vonneuma: check your address");
@@ -118,5 +120,11 @@ public class VonNeumannMemory {
 //		store("0","00010000111000100111111111111111");
 //		load("0");
 //	}
+
+	public static String[] zeros(int size){
+		String[] ret  = new String[size];
+		Arrays.fill(ret,"00000000");
+		return ret;
+	}
 	
 }

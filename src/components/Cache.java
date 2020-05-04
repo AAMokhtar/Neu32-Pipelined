@@ -1,4 +1,4 @@
-
+package components;
 
 public class Cache {
 
@@ -37,7 +37,7 @@ public class Cache {
 		//System.out.println(tag);
 		if(cells[0][index].equals("1")&&cells[1][index].equals(tag))
 		{
-			System.out.println("hit "+cells[2][index]);
+//			System.out.println("hit "+cells[2][index]);
 			return cells[2][index];
 		}
 		else
@@ -47,7 +47,7 @@ public class Cache {
 		   cells[0][index]="1";
 		   cells[1][index]=tag;
 		   cells[2][index]=temp;
-		   System.out.print("miss "+temp);
+//		   System.out.print("miss "+temp);
 		   return temp;
 		}
 		
@@ -69,7 +69,7 @@ public class Cache {
 //		//init();
 //		store("00000000000000000000010000000100","10000000000000000000000000000000");
 //		load("00000000000000000000010000000100");
-//		VonNeumannMemory.load("00000000000000000000010000000100");
+//		components.VonNeumannMemory.load("00000000000000000000010000000100");
 //		//System.out.print(Integer.parseInt("00000000000000000000010000000100",2));
 //	}
 }

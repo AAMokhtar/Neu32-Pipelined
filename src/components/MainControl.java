@@ -1,15 +1,19 @@
+package components;
+
+import other.DatapathException;
+
 import java.util.Hashtable;
 
 public class MainControl {
 	
 	/*
 	 * to use:
-	 * 1. MainControl.controlSignals(opcode)
+	 * 1. components.MainControl.controlSignals(opcode)
 	 * input: pass opcode (0-3) as a string field
 	 * output: hashtable of the following format:
 	 * 
 	 */
-	public static Hashtable<String, String> controlSignals(String opcode) throws DatapathException{
+	public static Hashtable<String, String> controlSignals(String opcode) throws DatapathException {
 		
 		if(opcode.length()!=4) {
 			throw new DatapathException("Opcode field's length is invalid!");
@@ -135,7 +139,7 @@ public class MainControl {
 				ret.put("RegWrite","0");
 				ret.put("MemToReg","x");
 				break;
-			default: throw new DatapathException("Invalid opcode entered @MainControl"); 
+			default: throw new DatapathException("Invalid opcode entered @components.MainControl");
 		}
 		
 		return ret;
