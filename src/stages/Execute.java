@@ -74,12 +74,11 @@ public class Execute {
 
         //=====================print the required output======================
         printStage(ZFlag,input.get("BranchAddress"),String.format("%32s", Integer.toBinaryString(ALUresult))
-                        .replace(' ', '0'), String.format("%32s", Integer.toBinaryString(operand1))
-                        .replace(' ', '0')
+                        .replace(' ', '0'), ReadData2
                 ,input.get("rt"),ID_EX.MEM_Control(),ID_EX.WB_Control());
     }
 
-    public static void printStage(String zflag,String branchAddress,String ALUResult,String data1,String rt,
+    public static void printStage(String zflag,String branchAddress,String ALUResult,String data2,String rt,
                                   HashMap<String,String> memcontrol, HashMap<String,String> wbcontrol){
         if (!formatter.checknop(formatter.AssemblyStages[2])) {
             StringBuilder out = new StringBuilder();
@@ -88,7 +87,7 @@ public class Execute {
                     .append("zero flag: ").append(zflag)
                     .append("\n\t\t").append("branch address: ").append(formatter.formatOut(branchAddress))
                     .append("\n\t\t").append("ALU result/address: ").append(formatter.formatOut(ALUResult))
-                    .append("\n\t\t").append("register value to write to memory: ").append(formatter.formatOut(data1))
+                    .append("\n\t\t").append("register value to write to memory: ").append(formatter.formatOut(data2))
                     .append("\n\t\t").append("rt/rd register: ").append(rt)
                     .append("\n\t\t").append("WB controls: ").append("MemToReg: ").append(wbcontrol.get("MemToReg"))
                     .append(", ").append("RegWrite: ").append(wbcontrol.get("RegWrite"))
