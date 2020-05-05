@@ -4,7 +4,7 @@ import java.util.HashMap;
 
 public class MEM_WB {
 	// TODO: PICKLE
-	// lel asaf consistency is valued in this field
+	// lel asaf consistency is valued in this field more than spaghetti
 
 	 /**
      * because we are not executing all the stages concurrently, stages will have to be executed
@@ -22,8 +22,8 @@ public class MEM_WB {
 	 * outgoing, new values -> incoming), we can make them alternate positions on
 	 * every read. that way we only copy the values once (new values -> incoming).
 	 *
-	 * false = write to incoming, read from outgoing true = write to outgoing, read
-	 * from incoming
+	 * false = write to incoming, read from outgoing
+	 * true = write to outgoing, read from incoming
 	 */
 	private static boolean reverse; // bit
 
@@ -63,7 +63,7 @@ public class MEM_WB {
 	}
 	
 	
-	//write = store the output of ID in incoming (outgoing if the order is reversed)
+	//write = store the output of MEM in incoming (outgoing if the order is reversed)
     public static void write(String readData, String ALUres, String rt, HashMap<String, String> control){
         if (reverse) {
             outgoing.put("ALUResult", ALUres);

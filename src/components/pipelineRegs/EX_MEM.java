@@ -124,7 +124,7 @@ public class EX_MEM {
         return outgoing;
     }
 
-    //write = store the output of ID in incoming (outgoing if the order is reversed)
+    //write = store the output of EX in incoming (outgoing if the order is reversed)
     public static void write(String ALUResult,String ReadData2, String ZFlag, String rd, HashMap<String, String> control){
         if (reverse) {
             outgoing.put("ALUResult", ALUResult);
