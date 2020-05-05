@@ -11,7 +11,7 @@ import stages.Fetch;
 public class tester {
     public static void main(String[] args) throws DatapathException {
 
-        String[] program = {     "00000000100010000110000000000000", //add 0000-00001-00010-00011-0000000000000
+        String[] program1 = {     "00000000100010000110000000000000", //add 0000-00001-00010-00011-0000000000000
                                  "00000001100100001010000000000001", //sub 0000-00011-00100-00101-0000000000001
                                  "00000010100110001110000000000010", //and 0000-00101-00110-00111-0000000000010
                                  "00000011101000010010000000000011", //mul 0000-00111-01000-01001-0000000000011
@@ -26,11 +26,28 @@ public class tester {
                                  "10000111100000000000000000000000", //bgt 1000-01111-00000-000000000000000000
                                  "10010000000000000000000000010100"}; //jump 1001-0000000000000000000000010100
 
+        String[] program2 = {    "00010000001000000000000000000101", //addi 0001-00000-01000-000000000000000101
+                                //======loop until the condition is false=============
+                                 "01011000001001000000000000000000", //lw  0101-10000-01001-000000000000000000
+                                 "00000101001011011000000000000000", //add 0000-01010-01011-01100-0000000000000
+                                 "01111000000000111111111111111101", //bne 0111-10000-00000-111111111111111101
+                                //====================End of loop=====================
+                                //jump is flushed if the branch succeeded
+                                 "10010000000000000000000000011000", //j 1001-0000000000000000000000011100
+                                //ori is always flushed
+                                 "00100110101110000000000000000011", //ori 0010-01101-01110-000000000000000011
+                                //jump destination
+                                 "01101000110010000000000000000000", //sw 0110-10001-10010-000000000000000000
+        };
+
 
         //load the program into memory
-            VonNeumannMemory.addinstructions(program);
+            VonNeumannMemory.addinstructions(program2);
 
-        //we need 18 cycles to fully execute all of the 14 instructions
+        System.out.print("NOTE: BRANCH/JUMP INSTRUCTIONS ARE HANDLED IN THE ID(DECODE) STAGE AND PIPELINE FLUSHING" +
+                "\nIS USED(IF NEEDED) TO HANDLE CONTROL HAZARDS.\n\n");
+
+        //we need 18 cycles to fully execute all of the 14 instructions in program1
         for (int i = 0; i < 18; i++) {
             System.out.print("After clock-cycle: "+(i+1)+":\n\n");
             cycle();

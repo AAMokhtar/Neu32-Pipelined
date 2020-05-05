@@ -45,7 +45,7 @@ public class formatter {
         int r1 = Integer.parseInt(rs,2);
         int r2 = Integer.parseInt(rt,2);
         int r3 = Integer.parseInt(rd,2);
-        int immInt = Integer.parseInt(immediate,2);
+        int immInt = operations.Complement(immediate);
         int tInt = Integer.parseInt(target,2);
 
         switch (op){
@@ -66,12 +66,12 @@ public class formatter {
             case "0011": assembly.append("sll ");break;
             case "0100": assembly.append("srl ");break;
             case "0101":
-                assembly.append("lw ").append("$").append(r1).append(", ").append(immInt).
-                        append("(").append("$").append(r2).append(")");
+                assembly.append("lw ").append("$").append(r2).append(", ").append(immInt).
+                        append("(").append("$").append(r1).append(")");
                 break;
             case "0110":
-                assembly.append("sw ").append("$").append(r1).append(", ").append(immInt).
-                        append("(").append("$").append(r2).append(")");
+                assembly.append("sw ").append("$").append(r2).append(", ").append(immInt).
+                        append("(").append("$").append(r1).append(")");
                 break;
             case "0111":
                 assembly.append("bne ").append("$").append(r1).append(", ").append("$").
@@ -85,9 +85,9 @@ public class formatter {
             default:break;
         }
 
-        if (Integer.parseInt(op) < 5 && !op.equals("0000")){
-            assembly.append("$").append(r1).append(", ").append("$").
-                    append(r2).append(", ").append(immInt);
+        if (Integer.parseInt(op,2) < 5 && !op.equals("0000")){
+            assembly.append("$").append(r2).append(", ").append("$").
+                    append(r1).append(", ").append(immInt);
         }
 
         return assembly.toString();

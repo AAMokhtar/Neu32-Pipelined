@@ -1,5 +1,7 @@
 package components;
 
+import other.DatapathException;
+
 import java.util.Arrays;
 
 public class VonNeumannMemory {
@@ -45,8 +47,7 @@ public class VonNeumannMemory {
 		}
 	}
 	
-	public static String fetchinstruction(int pc)
-	{
+	public static String fetchinstruction(int pc) throws DatapathException {
 		//init();
 		if(pc<=1023)
 		{
@@ -56,15 +57,13 @@ public class VonNeumannMemory {
 			result=result+memory[pc+3];
 			return result;
 		}
-		System.out.println("this is the data memory territory");
-		return null;
+		throw new DatapathException("this is the data memory territory");
 	}
 
 	
 	//data
 	//load 
-	public static String load(String address)
-	{
+	public static String load(String address) throws DatapathException {
 		//init();
 		int add=Integer.parseInt(address, 2);
 		if(add<1021)
@@ -76,14 +75,10 @@ public class VonNeumannMemory {
 //			System.out.println(result);
 			return result;
 		}
-		System.out.println("load in vonneuma: check your address");
-		return null;
-		
-		
+		throw new DatapathException("load in vonneuman: check your address");
 	}
 	//store
-	public static void store(String address,String data)
-	{
+	public static void store(String address,String data) throws DatapathException {
 		//init();
 		int add=Integer.parseInt(address, 2);
 		//System.out.println(add);
@@ -101,7 +96,7 @@ public class VonNeumannMemory {
 		}
 		else
 		{
-			System.out.println("store in vonneuma: check your address");
+			throw new DatapathException("store in vonneuman: check your address");
 		}
 	}
 //	public static void main(String[]args)

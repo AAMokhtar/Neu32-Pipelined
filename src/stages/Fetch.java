@@ -3,6 +3,7 @@ package stages;
 import components.Cache;
 import components.PC;
 import components.pipelineRegs.IF_ID;
+import other.DatapathException;
 import other.formatter;
 
 public class Fetch {
@@ -13,7 +14,7 @@ public class Fetch {
      */
     public static char Flush = '0';
 
-    public static void run(){
+    public static void run() throws DatapathException {
         //===============load the instruction from cache===============
             String instruction = Cache.load(PC.get32bitPC());
 

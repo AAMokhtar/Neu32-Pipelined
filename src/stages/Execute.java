@@ -15,6 +15,9 @@ public class Execute {
     public static void run() throws DatapathException {
 
         //===============get relevant inputs from ID_EX=======================
+            HashMap<String, String> MEM_control = ID_EX.MEM_Control();
+            HashMap<String, String> WB_control = ID_EX.WB_Control();
+
             HashMap<String, String> input = ID_EX.read();
             String ReadData1 = input.get("ReadData1");
             String ReadData2 = input.get("ReadData2");
@@ -39,8 +42,12 @@ public class Execute {
              *  - ForwardB = 10: Forward result of 2nd previous instruction to A (from MEM stage)
              *  - ForwardB = 11: Don't care
              */
+
+            //===Forwarding unit===
+            //TODO: use the forwarding unit to update ForwardA and ForwardB (method call)
+
             String ForwardA = "00" /*TODO: get signal from the forwarding unit*/;
-                String ForwardB = "00" /*TODO: get signal from the forwarding unit*/;
+            String ForwardB = "00" /*TODO: get signal from the forwarding unit*/;
 
         //=======================set the operands=============================
 
@@ -75,10 +82,10 @@ public class Execute {
         //=====================print the required output======================
         printStage(ZFlag,input.get("BranchAddress"),String.format("%32s", Integer.toBinaryString(ALUresult))
                         .replace(' ', '0'), ReadData2
-                ,input.get("rt"),ID_EX.MEM_Control(),ID_EX.WB_Control());
+                ,input.get("rd"),MEM_control,WB_control);
     }
 
-    public static void printStage(String zflag,String branchAddress,String ALUResult,String data2,String rt,
+    public static void printStage(String zflag,String branchAddress,String ALUResult,String data2,String rd,
                                   HashMap<String,String> memcontrol, HashMap<String,String> wbcontrol){
         if (!formatter.checknop(formatter.AssemblyStages[2])) {
             StringBuilder out = new StringBuilder();
@@ -88,7 +95,7 @@ public class Execute {
                     .append("\n\t\t").append("branch address: ").append(formatter.formatOut(branchAddress))
                     .append("\n\t\t").append("ALU result/address: ").append(formatter.formatOut(ALUResult))
                     .append("\n\t\t").append("register value to write to memory: ").append(formatter.formatOut(data2))
-                    .append("\n\t\t").append("rt/rd register: ").append(rt)
+                    .append("\n\t\t").append("rt/rd register: ").append(rd)
                     .append("\n\t\t").append("WB controls: ").append("MemToReg: ").append(wbcontrol.get("MemToReg"))
                     .append(", ").append("RegWrite: ").append(wbcontrol.get("RegWrite"))
                     .append("\n\t\t").append("MEM controls: ").append("MemRead: ").append(memcontrol.get("MemRead"))
