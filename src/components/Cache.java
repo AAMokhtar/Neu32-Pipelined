@@ -1,5 +1,7 @@
 package components;
 
+import other.DatapathException;
+
 public class Cache {
 
 	//if you want to load word or store word instruction aka memory access
@@ -29,8 +31,7 @@ public class Cache {
 //		cells[2][0]="reach";
 	}
 	
-	public static String load(String address)
-	{
+	public static String load(String address) throws DatapathException {
 		init();
 		int index=Integer.parseInt(address.substring(0, 7));
 		String tag=address.substring(7);
@@ -52,8 +53,7 @@ public class Cache {
 		}
 		
 	}
-	public static void store(String address,String data)
-	{
+	public static void store(String address,String data) throws DatapathException {
 		//write here then write to memory
 		init();
 		int index=Integer.parseInt(address.substring(0, 7));
