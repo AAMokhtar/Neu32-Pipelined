@@ -1,6 +1,7 @@
 package stages;
 
 import components.*;
+import components.pipelineRegs.EX_MEM;
 import components.pipelineRegs.ID_EX;
 import components.pipelineRegs.IF_ID;
 import other.DatapathException;
@@ -91,13 +92,25 @@ public class Decode {
              * appears at the end of the MEM cycle but is needed at the beginning of ID for the branch.
              */
 
-            //=======zero flag=======
+            //===Forwarding unit===
+            //TODO: use the forwarding unit to update ForwardA and ForwardB (method call)
+            //===========use the forwarding unit to get the operands===========
             //TODO: Data hazard. get the most recent values of rs,rt. (check previous comment)
-            String ZFlag = Comparator.compare("=",values[0],values[1]);
+
+            String ForwardA = "00" /*TODO: get signal from the forwarding unit*/;
+            String ForwardB = "00" /*TODO: get signal from the forwarding unit*/;
+
+            String operand1 = (String) MUX.mux4in(values[0], EX_MEM.ALUResult(), 0/*TODO: MEM/WB value*/,
+                    values[0],ForwardA.charAt(0)+"",ForwardA.charAt(1)+"");
+
+            String operand2 = (String) MUX.mux4in(values[1], EX_MEM.ALUResult(),0/*TODO: MEM/WB value*/,
+                    values[1],ForwardB.charAt(0)+"",ForwardB.charAt(1)+"");
+
+            //=======zero flag=======
+            String ZFlag = Comparator.compare("=",operand1,operand2);
 
             //===greater than flag===
-            //TODO: Data hazard. get the most recent values of rs,rt.
-            String GFlag = Comparator.compare(">",values[0],values[1]);
+            String GFlag = Comparator.compare(">",operand1,operand1);
 
         //================================get branch signals==============================
             String branchSignals = BranchControl.branchSignals(opCode, control.get("Jump"),control

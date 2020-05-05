@@ -42,6 +42,10 @@ public class Execute {
              *  - ForwardB = 10: Forward result of 2nd previous instruction to A (from MEM stage)
              *  - ForwardB = 11: Don't care
              */
+
+            //===Forwarding unit===
+            //TODO: use the forwarding unit to update ForwardA and ForwardB (method call)
+
             String ForwardA = "00" /*TODO: get signal from the forwarding unit*/;
             String ForwardB = "00" /*TODO: get signal from the forwarding unit*/;
 
