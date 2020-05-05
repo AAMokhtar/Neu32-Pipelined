@@ -127,5 +127,4 @@ public class formatter {
 
         return assembly.equals("add $0, $0, $0 (NOP)") || assembly.equals("add $0, $0, $0");
     }
-
 }
