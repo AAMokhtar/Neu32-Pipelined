@@ -37,8 +37,8 @@ public class MEM_WB {
 		incoming.put("ReadData", String.format("%032d", 0));
 		outgoing.put("ReadData", String.format("%032d", 0));
 		
-		incoming.put("rd", String.format("%032d", 0));
-		outgoing.put("rd", String.format("%032d", 0));
+		incoming.put("rt", String.format("%032d", 0));
+		outgoing.put("rt", String.format("%032d", 0));
 
 		// ===================WB_CONTROL======================
 
@@ -48,6 +48,22 @@ public class MEM_WB {
 		incoming.put("RegWrite", "0");
 		outgoing.put("RegWrite", "0");
 
+	}
+	
+	public static String rd() 
+	{
+		if (reverse)
+			return incoming.get("rt");
+		else
+			return outgoing.get("rt");
+	}
+
+	public static String readData() 
+	{
+		if (reverse)
+			return incoming.get("ReadData");
+		else
+			return outgoing.get("ReadData");
 	}
 
 	// read = get the previous cycle's values + reverse (ONLY USED BY THE NEXT STAGE)
