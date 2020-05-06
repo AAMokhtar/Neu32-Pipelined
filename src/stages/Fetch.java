@@ -2,6 +2,7 @@ package stages;
 
 import components.Cache;
 import components.PC;
+import components.VonNeumannMemory;
 import components.pipelineRegs.IF_ID;
 import other.DatapathException;
 import other.formatter;
@@ -16,7 +17,7 @@ public class Fetch {
 
     public static void run() throws DatapathException {
         //===============load the instruction from cache===============
-            String instruction = Cache.loadInstruction(PC.get32bitPC());
+            String instruction = VonNeumannMemory.fetchinstruction(PC.getPC());
 
         //===================increment PC (PC + 4)=====================
             incPC();

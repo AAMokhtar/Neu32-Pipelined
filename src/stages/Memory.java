@@ -39,7 +39,7 @@ public class Memory {
 			//reads data in the calculated address in ALUres
 		else if(memRead==1 && memWrite==0)
 		{
-			String readData = Cache.loadData(ALUres);
+			String readData = Cache.load(ALUres);
 			MEM_WB.write(readData, ALUres, rt, input);
 			print(ALUres, readData, input.get("rd"), input.get("MemToReg"), input.get("RegWrite"));
 		}
