@@ -70,10 +70,10 @@ public class Memory {
 	public static void print(String ALUres, String readData, String rt, String MemToReg, String RegWrite)
 	{
 		if(!formatter.checknop(formatter.AssemblyStages[3]))
-			System.out.println(formatter.AssemblyStages[3] + " in stages.Memory stage:" + '\n' +
-					           "ALU result: " + formatter.formatOut(ALUres) + '\n' +
-					           "memory word read: " + (readData.equals("don't care") ? readData : formatter.formatOut(readData)) + '\n' +
-					           "rt/rd field: " + rt + '\n' +
-					           "WB controls: MemToReg: " + MemToReg + ", RegWrite: " + RegWrite);
+			System.out.println("\t"+formatter.AssemblyStages[3] + " in Memory stage:" + "\n\n\t\t" +
+					           "ALU result: " + formatter.formatOut(ALUres) + "\n\t\t" +
+					           "memory word read: " + (readData.equals("don't care") ? readData : formatter.formatOut(readData))
+								+ "\n\t\t" + "rt/rd field: " + rt + "\n\t\t" + "WB controls: MemToReg: " +
+								MemToReg + ", RegWrite: " + RegWrite+"\n");
 	}
 }

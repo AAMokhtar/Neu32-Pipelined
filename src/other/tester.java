@@ -1,9 +1,7 @@
 package other;
 
 import components.VonNeumannMemory;
-import stages.Decode;
-import stages.Execute;
-import stages.Fetch;
+import stages.*;
 
 /**
  * used for testing the datapath. you may delete this when we are done
@@ -26,12 +24,16 @@ public class tester {
                                  "10000111100000000000000000000000", //bgt 1000-01111-00000-000000000000000000
                                  "10010000000000000000000000010100"}; //jump 1001-0000000000000000000000010100
 
-        String[] program2 = {    "00010000001000000000000000000101", //addi 0001-00000-01000-000000000000000101
+        String[] program2 = {    "00010000000001000000000000000001", //addi 0001-00000-00001-000000000000000001
+                                 "00010000010000000000000000000101", //addi 0001-00000-10000-000000000000000101
+                                 "01100000000001000000010000000000", //sw 0110-00000-00001-000000010000000000
+
                                 //======loop until the condition is false=============
-                                 "01011000001001000000000000000000", //lw  0101-10000-01001-000000000000000000
-                                 "00000101001011011000000000000000", //add 0000-01010-01011-01100-0000000000000
+                                 "01010000000010000000010000000000", //lw  0101-00000-00010-000000010000000000
+                                 "100001000000010011000000000000001", //sub 10000-10000-00010-01100-0000000000001
                                  "01111000000000111111111111111101", //bne 0111-10000-00000-111111111111111101
                                 //====================End of loop=====================
+
                                 //jump is flushed if the branch succeeded
                                  "10010000000000000000000000000110", //j 1001-0000000000000000000000000110
                                 //ori is always flushed
@@ -48,7 +50,7 @@ public class tester {
                 "\nIS USED(IF NEEDED) TO HANDLE CONTROL HAZARDS.\n\n");
 
         //we need 18 cycles to fully execute all of the 14 instructions in program1
-        for (int i = 0; i < 18; i++) {
+        for (int i = 0; i < 100; i++) {
             System.out.print("After clock-cycle: "+(i+1)+":\n\n");
             cycle();
         }
@@ -63,5 +65,7 @@ public class tester {
         Fetch.run();
         Decode.run();
         Execute.run();
+        Memory.mem();
+        WriteBack.wb();
     }
 }

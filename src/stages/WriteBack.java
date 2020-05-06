@@ -22,7 +22,7 @@ public class WriteBack {
 		// you can never be too sure
 		if (!regWrite.equals("1") && !regWrite.equals("0"))
 			throw new DatapathException("RegWrite value of: " + regWrite + " is invalid");
-		if (!memToReg.equals("1") && !memToReg.equals("1") && !memToReg.equals("x"))
+		if (!memToReg.equals("1") && !memToReg.equals("0") && !memToReg.equals("x"))
 			throw new DatapathException("MemToReg value of: " + memToReg + " is invalid");
 		
 		//to data input line 1 of 2x1 MUX
@@ -45,7 +45,7 @@ public class WriteBack {
 	public static void print()
 	{
 		if(!formatter.checknop(formatter.AssemblyStages[4]))
-			System.out.println(formatter.AssemblyStages[4] + " in WB stage");
+			System.out.println("\t"+formatter.AssemblyStages[4] + " in WB stage\n");
 	}
 	
 	public static void main(String[] args) {
