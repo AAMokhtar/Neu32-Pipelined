@@ -11,7 +11,7 @@ public class IF_ID {
      * same instruction to the IF stage over and over again. This effectively freezes the instruction
      * that's currently in the ID stage.
      */
-    private static char IF_IDWrite;
+    public static char IF_IDWrite;
 
     /**
      * because we are not executing all the stages concurrently, stages will have to be executed

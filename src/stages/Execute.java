@@ -2,9 +2,11 @@ package stages;
 
 import components.ALU;
 import components.ALUControl;
+import components.ForwardingUnit;
 import components.MUX;
 import components.pipelineRegs.EX_MEM;
 import components.pipelineRegs.ID_EX;
+import components.pipelineRegs.MEM_WB;
 import other.DatapathException;
 import other.formatter;
 import other.operations;
@@ -44,21 +46,21 @@ public class Execute {
              */
 
             //===Forwarding unit===
-            //TODO: use the forwarding unit to update ForwardA and ForwardB (method call)
+            ForwardingUnit.setFlags(input.get("rs"),input.get("rt"),input.get("RegWrite"));
 
-            String ForwardA = "00" /*TODO: get signal from the forwarding unit*/;
-            String ForwardB = "00" /*TODO: get signal from the forwarding unit*/;
+            String ForwardA = ForwardingUnit.ForwardA;
+            String ForwardB = ForwardingUnit.ForwardB;
 
         //=======================set the operands=============================
 
             //the forwarding unit decides the source of the operands
-            String mux1 = (String) MUX.mux4in(ReadData1, EX_MEM.ALUResult(), 0/*TODO: MEM/WB value*/,
+            String mux1 = (String) MUX.mux4in(ReadData1, EX_MEM.ALUResult(), MEM_WB.readData(),
                     ReadData1,ForwardA.charAt(0)+"",ForwardA.charAt(1)+"");
 
             int operand1 = Integer.parseInt(mux1,2);
 
 
-            String mux2 = (String) MUX.mux4in(ReadData2, EX_MEM.ALUResult(),0/*TODO: MEM/WB value*/,
+            String mux2 = (String) MUX.mux4in(ReadData2, EX_MEM.ALUResult(),MEM_WB.readData(),
                     ReadData2,ForwardB.charAt(0)+"",ForwardB.charAt(1)+"");
             int operand2 = Integer.parseInt(mux2,2);
 

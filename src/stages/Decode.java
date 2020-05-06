@@ -4,6 +4,7 @@ import components.*;
 import components.pipelineRegs.EX_MEM;
 import components.pipelineRegs.ID_EX;
 import components.pipelineRegs.IF_ID;
+import components.pipelineRegs.MEM_WB;
 import other.DatapathException;
 import other.formatter;
 import other.operations;
@@ -32,6 +33,7 @@ public class Decode {
 
             String funct = instruction.substring(19);
 
+            HazardDetectionUnit.setFlags(rs, rt);
         //======================control signals are NOP initially=======================
             Hashtable<String, String> control = new Hashtable<>();
             control.put("Branch","0");
@@ -46,7 +48,7 @@ public class Decode {
 
         //=====set the controls according to the hazard detection unit's NOP signal=====
             control = (Hashtable<String, String>) MUX.mux2in(MainControl.controlSignals(opCode),
-                       control,0/*TODO: HazardDetectionUnit.NOP */);
+                       control,HazardDetectionUnit.NOP - '0');
 
         //======================get the correct destination register====================
             rd = (String) MUX.mux2in(rt,rd,control.get("DstReg").charAt(0) - '0');
@@ -77,7 +79,11 @@ public class Decode {
              * shift the 28 bit target left by 2 bits and get the
              * remaining 2 bits from the incremented PC's most left bits
              */
-            int jumpAddress = Integer.parseInt(input.get("PC").substring(0,3) + target,2);
+            String shiftedTarget = String.format("%30s", Integer.toBinaryString (Integer.parseInt(target,2) << 2))
+                .replace(' ', '0');
+
+            int jumpAddress = Integer.parseInt(input.get("PC").substring(0,3) + shiftedTarget,2);
+
 
 
         //======================Set the flags needed for branching=======================
@@ -100,10 +106,10 @@ public class Decode {
             String ForwardA = "00" /*TODO: get signal from the forwarding unit*/;
             String ForwardB = "00" /*TODO: get signal from the forwarding unit*/;
 
-            String operand1 = (String) MUX.mux4in(values[0], EX_MEM.ALUResult(), 0/*TODO: MEM/WB value*/,
+            String operand1 = (String) MUX.mux4in(values[0], EX_MEM.ALUResult(), MEM_WB.readData(),
                     values[0],ForwardA.charAt(0)+"",ForwardA.charAt(1)+"");
 
-            String operand2 = (String) MUX.mux4in(values[1], EX_MEM.ALUResult(),0/*TODO: MEM/WB value*/,
+            String operand2 = (String) MUX.mux4in(values[1], EX_MEM.ALUResult(),MEM_WB.readData(),
                     values[1],ForwardB.charAt(0)+"",ForwardB.charAt(1)+"");
 
             //=======zero flag=======

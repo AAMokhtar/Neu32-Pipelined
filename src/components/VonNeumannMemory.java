@@ -63,10 +63,25 @@ public class VonNeumannMemory {
 	
 	//data
 	//load 
-	public static String load(String address) throws DatapathException {
+	public static String loadInstruction(String address) throws DatapathException {
 		//init();
 		int add=Integer.parseInt(address, 2);
 		if(add<1021)
+		{
+			String result=memory[add];
+			result=result+memory[add+1];
+			result=result+memory[add+2];
+			result=result+memory[add+3];
+//			System.out.println(result);
+			return result;
+		}
+		throw new DatapathException("load in vonneuman: check your address");
+	}
+
+	public static String loadData(String address) throws DatapathException {
+		//init();
+		int add=Integer.parseInt(address, 2);
+		if(add >= 1024)
 		{
 			String result=memory[add];
 			result=result+memory[add+1];

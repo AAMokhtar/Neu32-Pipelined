@@ -39,7 +39,7 @@ public class Memory {
 			//reads data in the calculated address in ALUres
 		else if(memRead==1 && memWrite==0)
 		{
-			String readData = Cache.load(ALUres);
+			String readData = Cache.loadData(ALUres);
 			MEM_WB.write(readData, ALUres, rt, input);
 			print(ALUres, readData, input.get("rd"), input.get("MemToReg"), input.get("RegWrite"));
 		}
@@ -49,14 +49,14 @@ public class Memory {
 			Cache.store(ALUres, readData2);
 			//the strings we deal with are binary strings
 			//so it can never be coincidentally that the data read is "don't care"
-			String readData = "don't care";
+			String readData = "00000000000000000000000000000000";
 			MEM_WB.write(readData, ALUres, rt, input);
 			print(ALUres, readData, input.get("rd"), input.get("MemToReg"), input.get("RegWrite"));
 		}
 		//do nothing
 		else if(memRead==0 && memWrite==0)
 		{
-			String readData = "don't care";
+			String readData = "00000000000000000000000000000000";
 			MEM_WB.write(readData, ALUres, rt, input);
 			print(ALUres, readData, input.get("rd"), input.get("MemToReg"), input.get("RegWrite"));
 		}

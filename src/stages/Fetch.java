@@ -16,7 +16,7 @@ public class Fetch {
 
     public static void run() throws DatapathException {
         //===============load the instruction from cache===============
-            String instruction = Cache.load(PC.get32bitPC());
+            String instruction = Cache.loadInstruction(PC.get32bitPC());
 
         //===================increment PC (PC + 4)=====================
             incPC();

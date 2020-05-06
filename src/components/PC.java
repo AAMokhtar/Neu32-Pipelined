@@ -22,18 +22,18 @@ public class PC {
 	
 	public static void setPC(int pc)
 	{
-//		TODO:	if (HazardDetectionUnit.PCWrite == '1'){
+		if (HazardDetectionUnit.PCWrite == '1'){
 			PC=pc;
-//		}
+		}
 
 	}
 	
 	public static void set32bitpc(String pc) {
 
-//	TODO:	if (HazardDetectionUnit.PCWrite == '1'){
+		if (HazardDetectionUnit.PCWrite == '1'){
 			//the input is a32 bit input representing pc in binary
 			PC = Integer.parseInt(pc, 2);
-//		}
+		}
 	}
 	
 	}

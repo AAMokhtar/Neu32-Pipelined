@@ -1,8 +1,34 @@
 package components;
 
+import components.pipelineRegs.EX_MEM;
+import components.pipelineRegs.MEM_WB;
+
 public class ForwardingUnit {
-    //TODO: MOSSAD
-    // ForwardA and ForwardB are needed
+    public static String ForwardA = "00";
+    public static String ForwardB = "00";
+
+    public static void setFlags(String rs, String rt,String regWrite){
+        if (regWrite.equals("0")){
+            ForwardA = "00";
+        }
+        else if (rs.equals(EX_MEM.rd())){
+            ForwardA = "01";
+        }
+        else if (rs.equals(MEM_WB.rd())){
+            ForwardA = "10";
+        }
+        //==========================
+        if (regWrite.equals("0")){
+            ForwardB = "00";
+        }
+        else if (rt.equals(EX_MEM.rd())){
+            ForwardB = "01";
+        }
+        else if (rt.equals(MEM_WB.rd())){
+            ForwardB = "10";
+        }
+
+    }
 
     /*
      * Cases:
