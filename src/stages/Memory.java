@@ -1,3 +1,5 @@
+package stages;
+
 import java.util.HashMap;
 
 import components.Cache;
@@ -73,7 +75,7 @@ public class Memory {
 	public static void print(String ALUres, String readData, String rt, String MemToReg, String RegWrite)
 	{
 		if(!formatter.checknop(formatter.AssemblyStages[3]))
-			System.out.println(formatter.AssemblyStages[3] + " in Memory stage:" + '\n' +
+			System.out.println(formatter.AssemblyStages[3] + " in stages.Memory stage:" + '\n' +
 					           "ALU result: " + formatter.formatOut(ALUres) + '\n' +
 					           "memory word read: " + (readData=="don't care" ? readData : formatter.formatOut(readData)) + '\n' +
 					           "rt/rd field: " + rt + '\n' +

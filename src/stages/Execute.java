@@ -77,7 +77,8 @@ public class Execute {
             String ZFlag = ALUresult == 0? "1":"0";
 
         //================pass the outputs to the next stage==================
-        EX_MEM.write(Integer.toBinaryString(ALUresult), ReadData2,ZFlag,input.get("rd"),input);
+        EX_MEM.write(String.format("%32s", Integer.toBinaryString(ALUresult))
+                .replace(' ', '0'), ReadData2,ZFlag,input.get("rd"),input);
 
         //=====================print the required output======================
         printStage(ZFlag,input.get("BranchAddress"),String.format("%32s", Integer.toBinaryString(ALUresult))

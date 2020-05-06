@@ -1,3 +1,5 @@
+package stages;
+
 import java.util.HashMap;
 
 import components.MUX;
