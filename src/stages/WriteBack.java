@@ -1,3 +1,5 @@
+package stages;
+
 import java.util.HashMap;
 
 import components.MUX;
@@ -13,10 +15,15 @@ public class WriteBack {
 		//getting the data from the pipeline register
 		HashMap<String, String> input = MEM_WB.read();
 		
-		//WB controls
-		int memToReg = Integer.parseInt(input.get("MemToReg"));
-		int regWrite = Integer.parseInt(input.get("RegWrite"));
+		// WB controls
+		String memToReg = input.get("MemToReg");
+		String regWrite = input.get("RegWrite");
 		
+		// you can never be too sure
+		if (!regWrite.equals("1") && !regWrite.equals("0"))
+			throw new DatapathException("RegWrite value of: " + regWrite + " is invalid");
+		if (!memToReg.equals("1") && !memToReg.equals("1") && !memToReg.equals("x"))
+			throw new DatapathException("MemToReg value of: " + memToReg + " is invalid");
 		
 		//to data input line 1 of 2x1 MUX
 		String readData = input.get("ReadData");
@@ -25,16 +32,11 @@ public class WriteBack {
 		//to write register
 		String rt = input.get("rt");
 		
-		//you can never be too sure
-		if(regWrite!=1 || regWrite!=0)
-			throw new DatapathException("RegWrite value of: " + regWrite + " is invalid");
-		if(memToReg!=1 || memToReg!=0)
-			throw new DatapathException("MemToReg value of: " + memToReg + " is invalid");
-		
-		String writeData = (String) MUX.mux2in(ALUres, readData, memToReg);
+		//let's play a dangerous game
+		String writeData = (String) MUX.mux2in(ALUres, readData, memToReg.equals("x") ? (int)(Math.random()*2) : Integer.parseInt(memToReg));
 		
 		//write the data chosen by the MUX to the register
-		if(regWrite==1)
+		if(regWrite.equals("1"))
 			RegisterFile.writedata(writeData, rt);
 		
 		print();
@@ -46,4 +48,8 @@ public class WriteBack {
 			System.out.println(formatter.AssemblyStages[4] + " in WB stage");
 	}
 	
+	public static void main(String[] args) {
+		for(int i=0;i<10;i++)
+			System.out.println((int)(Math.random()*2));
+	}
 }
