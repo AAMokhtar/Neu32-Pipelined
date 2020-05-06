@@ -29,43 +29,14 @@ public class Execute {
             String ALUSrc = input.get("ALUSrc");
             String funct = input.get("funct");
 
-        //======================forwarding signals============================
-            /*
-             * Cases:
-             *  - ForwardA = 00: First ALU operand comes from register file = Value of (rs)
-             *  - ForwardA = 01: Forward result of previous instruction to A (from ALU stage)
-             *  - ForwardA = 10: Forward result of 2nd previous instruction to A (from MEM stage)
-             *  - ForwardA = 11: Don't care
-             *
-             *  - ForwardB = 00: First ALU operand comes from register file = Value of (rt)
-             *  - ForwardB = 01: Forward result of previous instruction to A (from ALU stage)
-             *  - ForwardB = 10: Forward result of 2nd previous instruction to A (from MEM stage)
-             *  - ForwardB = 11: Don't care
-             */
-
-            //===Forwarding unit===
-            //TODO: use the forwarding unit to update ForwardA and ForwardB (method call)
-
-            String ForwardA = "00" /*TODO: get signal from the forwarding unit*/;
-            String ForwardB = "00" /*TODO: get signal from the forwarding unit*/;
-
         //=======================set the operands=============================
-
-            //the forwarding unit decides the source of the operands
-            String mux1 = (String) MUX.mux4in(ReadData1, EX_MEM.ALUResult(), 0/*TODO: MEM/WB value*/,
-                    ReadData1,ForwardA.charAt(0)+"",ForwardA.charAt(1)+"");
-
-            int operand1 = Integer.parseInt(mux1,2);
-
-
-            String mux2 = (String) MUX.mux4in(ReadData2, EX_MEM.ALUResult(),0/*TODO: MEM/WB value*/,
-                    ReadData2,ForwardB.charAt(0)+"",ForwardB.charAt(1)+"");
-            int operand2 = Integer.parseInt(mux2,2);
-
+            int operand1 = Integer.parseInt(ReadData1,2);
+            int operand2 = Integer.parseInt(ReadData2,2);
             int operand2ALT = operations.Complement(Immediate);
 
             //choose between operand2 and operand2ALT according to the ALUSrc signal
             operand2 = (int) MUX.mux2in(operand2,operand2ALT,ALUSrc.charAt(0) - '0');
+
 
         //====================get the operation code==========================
             String ALUCode = ALUControl.ALUSignals(funct,ALUop);

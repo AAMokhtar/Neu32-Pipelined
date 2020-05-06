@@ -28,12 +28,6 @@ public class ID_EX {
         incoming = new HashMap<>();
         outgoing = new HashMap<>();
 
-        incoming.put("rs", "00000");
-        outgoing.put("rs", "00000");
-
-        incoming.put("rt", "00000");
-        outgoing.put("rt", "00000");
-
         incoming.put("rd", "00000");
         outgoing.put("rd", "00000");
 
@@ -127,16 +121,6 @@ public class ID_EX {
         return ret;
     }
 
-    public static String rs(){
-        if (reverse) return incoming.get("rs");
-        else return outgoing.get("rs");
-    }
-
-    public static String rt(){
-        if (reverse) return incoming.get("rt");
-        else return outgoing.get("rt");
-    }
-
     public static String rd(){
         if (reverse) return incoming.get("rd");
         else return outgoing.get("rd");
@@ -165,9 +149,8 @@ public class ID_EX {
     }
 
     //write = store the output of ID in incoming (outgoing if the order is reversed)
-    public static void write(String Readdata1, String ReadData2, String immediate,String BranchAddress,String rs,
-            String rt, String rd,String funct,
-                             Hashtable<String,String> control){
+    public static void write(String Readdata1, String ReadData2, String immediate,String BranchAddress,
+                             String rd,String funct, Hashtable<String,String> control){
         if (reverse) {
             outgoing.put("ReadData1", Readdata1);
             outgoing.put("ReadData2", ReadData2);
@@ -187,8 +170,6 @@ public class ID_EX {
             outgoing.put("MemToReg", control.get("MemToReg"));
             outgoing.put("RegWrite", control.get("RegWrite"));
 
-            outgoing.put("rs", rs);
-            outgoing.put("rt", rt);
             outgoing.put("rd", rd);
         }
         else{
@@ -210,8 +191,6 @@ public class ID_EX {
             incoming.put("MemToReg", control.get("MemToReg"));
             incoming.put("RegWrite", control.get("RegWrite"));
 
-            incoming.put("rs", rs);
-            incoming.put("rt", rt);
             incoming.put("rd", rd);
         }
     }

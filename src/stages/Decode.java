@@ -32,21 +32,9 @@ public class Decode {
 
             String funct = instruction.substring(19);
 
-        //======================control signals are NOP initially=======================
-            Hashtable<String, String> control = new Hashtable<>();
-            control.put("Branch","0");
-            control.put("Jump","0");
-            control.put("DstReg","0");
-            control.put("ALUSrc","0");
-            control.put("ALUop","000");
-            control.put("MemRead","0");
-            control.put("MemWrite","0");
-            control.put("RegWrite","0");
-            control.put("MemToReg","0");
+        //======================get the control signals=======================
+            Hashtable<String, String> control = MainControl.controlSignals(opCode);
 
-        //=====set the controls according to the hazard detection unit's NOP signal=====
-            control = (Hashtable<String, String>) MUX.mux2in(MainControl.controlSignals(opCode),
-                       control,0/*TODO: HazardDetectionUnit.NOP */);
 
         //======================get the correct destination register====================
             rd = (String) MUX.mux2in(rt,rd,control.get("DstReg").charAt(0) - '0');
@@ -77,40 +65,18 @@ public class Decode {
              * shift the 28 bit target left by 2 bits and get the
              * remaining 2 bits from the incremented PC's most left bits
              */
-            int jumpAddress = Integer.parseInt(input.get("PC").substring(0,3) + target,2);
+            String shiftedTarget = String.format("%30s", Integer.toBinaryString (Integer.parseInt(target,2) << 2))
+                    .replace(' ', '0');
+
+            int jumpAddress = Integer.parseInt(input.get("PC").substring(0,3) + shiftedTarget,2);
 
 
         //======================Set the flags needed for branching=======================
-
-            /*
-             * Because the values in a branch comparison are needed during ID but may be produced later in time,
-             * it is possible that a data hazard can occur and a stall will be needed. For example, if an ALU
-             * instruction immediately preceding a branch produces one of the operands for the comparison in
-             * the branch, a stall will be required, since the EX stage for the ALU instruction will occur after
-             * the ID cycle of the branch. By extension, if a load is immediately followed by a conditional
-             * branch that is on the load result, two stall cycles will be needed, as the result from the load
-             * appears at the end of the MEM cycle but is needed at the beginning of ID for the branch.
-             */
-
-            //===Forwarding unit===
-            //TODO: use the forwarding unit to update ForwardA and ForwardB (method call)
-            //===========use the forwarding unit to get the operands===========
-            //TODO: Data hazard. get the most recent values of rs,rt. (check previous comment)
-
-            String ForwardA = "00" /*TODO: get signal from the forwarding unit*/;
-            String ForwardB = "00" /*TODO: get signal from the forwarding unit*/;
-
-            String operand1 = (String) MUX.mux4in(values[0], EX_MEM.ALUResult(), 0/*TODO: MEM/WB value*/,
-                    values[0],ForwardA.charAt(0)+"",ForwardA.charAt(1)+"");
-
-            String operand2 = (String) MUX.mux4in(values[1], EX_MEM.ALUResult(),0/*TODO: MEM/WB value*/,
-                    values[1],ForwardB.charAt(0)+"",ForwardB.charAt(1)+"");
-
             //=======zero flag=======
-            String ZFlag = Comparator.compare("=",operand1,operand2);
+            String ZFlag = Comparator.compare("=",values[0],values[1]);
 
             //===greater than flag===
-            String GFlag = Comparator.compare(">",operand1,operand1);
+            String GFlag = Comparator.compare(">",values[0],values[1]);
 
         //================================get branch signals==============================
             String branchSignals = BranchControl.branchSignals(opCode, control.get("Jump"),control
@@ -143,7 +109,7 @@ public class Decode {
              */
 
             ID_EX.write(values[0], values[1], immediate,String.format("%32s", Integer.toBinaryString(branchAddress))
-                    .replace(' ', '0'), rs, rt, rd, funct, control);
+                    .replace(' ', '0'), rd, funct, control);
 
         //================================print the required output======================
             printStage(values[0],values[1],immediate,input.get("PC"),rt,rd,control);
@@ -169,6 +135,7 @@ public class Decode {
                     .append("\n\t\t").append("EX controls: ").append("RegDest: ").append(control.get("DstReg"))
                     .append(", ").append("ALUOp: ").append(control.get("ALUop")).append(", ")
                     .append("ALUSrc: ").append(control.get("ALUSrc")).append("\n\n");
+
             System.out.print(out.toString());
         }
     }

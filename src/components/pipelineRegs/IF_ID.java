@@ -7,13 +7,6 @@ import java.util.HashMap;
 public class IF_ID {
 
     /**
-     * When IF/DWrite is deasserted (=0), the IF/ID register is not written to, making it deliver the
-     * same instruction to the IF stage over and over again. This effectively freezes the instruction
-     * that's currently in the ID stage.
-     */
-    private static char IF_IDWrite;
-
-    /**
      * because we are not executing all the stages concurrently, stages will have to be executed
      * sequentially starting with IF. Completed stages will need a place to store their outputs
      * in without affecting the upcoming stages in the same cycle. A solution to this problem
@@ -35,7 +28,6 @@ public class IF_ID {
 
     //initialize values
     static {
-        IF_IDWrite = '1';
         incoming = new HashMap<>();
         outgoing = new HashMap<>();
 
@@ -60,19 +52,17 @@ public class IF_ID {
     public static HashMap<String, String> read(){
 
         if (reverse){
-           if (IF_IDWrite == '1') reverse = false; //if we don't write, we don't reverse
+            reverse = false; //if we don't write, we don't reverse
             return incoming;
         }
 
-        if (IF_IDWrite == '1') reverse = true;
+        reverse = true;
         return outgoing;
     }
 
     //write = store the output of IF in incoming (outgoing if the order is reversed)
     public static void write(String inst,int PC){
-        //stall  if IF_IDWrite == '0'
 
-        if (IF_IDWrite == '1') {
             if (reverse) {
                 outgoing.put("Instruction", inst);
                 outgoing.put("PC", String.format("%32s",
@@ -83,7 +73,7 @@ public class IF_ID {
                 incoming.put("PC", String.format("%32s",
                         Integer.toBinaryString(PC)).replace(' ', '0'));
             }
-        }
+
 
         formatter.advance(inst); //for printing
     }

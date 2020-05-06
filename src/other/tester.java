@@ -6,12 +6,12 @@ import stages.Execute;
 import stages.Fetch;
 
 /**
- * used for testing the datapath you may delete this when we are done
+ * used for testing the datapath. you may delete this when we are done
  */
 public class tester {
     public static void main(String[] args) throws DatapathException {
 
-        String[] program1 = {     "00000000100010000110000000000000", //add 0000-00001-00010-00011-0000000000000
+        String[] program1 = {    "00000000100010000110000000000000", //add 0000-00001-00010-00011-0000000000000
                                  "00000001100100001010000000000001", //sub 0000-00011-00100-00101-0000000000001
                                  "00000010100110001110000000000010", //and 0000-00101-00110-00111-0000000000010
                                  "00000011101000010010000000000011", //mul 0000-00111-01000-01001-0000000000011
@@ -33,7 +33,7 @@ public class tester {
                                  "01111000000000111111111111111101", //bne 0111-10000-00000-111111111111111101
                                 //====================End of loop=====================
                                 //jump is flushed if the branch succeeded
-                                 "10010000000000000000000000011000", //j 1001-0000000000000000000000011100
+                                 "10010000000000000000000000000110", //j 1001-0000000000000000000000000110
                                 //ori is always flushed
                                  "00100110101110000000000000000011", //ori 0010-01101-01110-000000000000000011
                                 //jump destination
