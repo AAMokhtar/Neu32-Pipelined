@@ -4,7 +4,7 @@ import java.util.HashMap;
 
 public class MEM_WB {
 	// TODO: PICKLE
-	// lel asaf consistency is valued in this field more than spaghetti
+	// lel asaf consistency is valued in this field more than pea spaghetti
 
 	 /**
      * because we are not executing all the stages concurrently, stages will have to be executed
@@ -50,21 +50,7 @@ public class MEM_WB {
 
 	}
 	
-	public static String rd() 
-	{
-		if (reverse)
-			return incoming.get("rt");
-		else
-			return outgoing.get("rt");
-	}
-
-	public static String readData() 
-	{
-		if (reverse)
-			return incoming.get("ReadData");
-		else
-			return outgoing.get("ReadData");
-	}
+	//no more forwarding :(
 
 	// read = get the previous cycle's values + reverse (ONLY USED BY THE NEXT STAGE)
 	public static HashMap<String, String> read() {
