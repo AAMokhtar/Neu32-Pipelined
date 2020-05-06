@@ -70,7 +70,7 @@ public class VonNeumannMemory {
 	public static String load(String address) throws DatapathException {
 		//init();
 		int add=Integer.parseInt(address, 2);
-		if(add>1023)
+		if(add>1023 && add < memory.length)
 		{
 			String result=memory[add];
 			result=result+memory[add+1];
