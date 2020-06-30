@@ -6,6 +6,7 @@ import components.pipelineRegs.IF_ID;
 
 public class HazardDetectionUnit {
     public static char NOP = '0';
+    public static void  setFlags(String rs,String rt, boolean branch){
         if ((ID_EX.MEM_Control().get("MemRead").equals("1") && !ID_EX.rd().equals("00000") &&
            (rs.equals(ID_EX.rd()) || rt.equals(ID_EX.rd())))
         ||
