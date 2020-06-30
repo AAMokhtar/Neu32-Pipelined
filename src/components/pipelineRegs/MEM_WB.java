@@ -52,6 +52,14 @@ public class MEM_WB {
 	
 	//no more forwarding :(
 
+	public static String regWrite()
+	{
+		if (reverse)
+			return incoming.get("RegWrite");
+		else
+			return outgoing.get("RegWrite");
+	}
+
 	// read = get the previous cycle's values + reverse (ONLY USED BY THE NEXT STAGE)
 	public static HashMap<String, String> read() {
 
