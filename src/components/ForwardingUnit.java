@@ -7,25 +7,25 @@ public class ForwardingUnit {
     public static String ForwardA = "00";
     public static String ForwardB = "00";
 
-    public static void setFlags(String rs, String rt,String regWrite){
-        if (regWrite.equals("0")){
-            ForwardA = "00";
-        }
-        else if (rs.equals(EX_MEM.rd())){
+    public static void setFlags(String rs, String rt,String regWrite_EX_MEM,String regWrite_MEM_WB){
+        if (regWrite_EX_MEM.equals("1") && !rs.equals("00000") && rs.equals(EX_MEM.rd())){
             ForwardA = "01";
         }
-        else if (rs.equals(MEM_WB.rd())){
+        else if (regWrite_MEM_WB.equals("1") && !rs.equals("00000") && rs.equals(MEM_WB.rd())){
             ForwardA = "10";
         }
-        //==========================
-        if (regWrite.equals("0")){
-            ForwardB = "00";
+        else {
+            ForwardA = "00";
         }
-        else if (rt.equals(EX_MEM.rd())){
+        //==========================
+        if (regWrite_EX_MEM.equals("1") && !rt.equals("00000") && rt.equals(EX_MEM.rd())){
             ForwardB = "01";
         }
-        else if (rt.equals(MEM_WB.rd())){
+        else if (regWrite_MEM_WB.equals("1") && !rt.equals("00000") && rt.equals(MEM_WB.rd())){
             ForwardB = "10";
+        }
+        else {
+            ForwardB = "00";
         }
 
     }

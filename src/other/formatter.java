@@ -9,6 +9,7 @@ public class formatter {
      * in every stage.
      */
     public static String[] AssemblyStages =nops(5);
+    public static boolean stall = false;
 
     /**
      *
@@ -16,11 +17,20 @@ public class formatter {
      * Function: it advances all the instructions in AssemblyStages by 1 stage.
      */
     public static void advance(String instruction){
-        for (int i = AssemblyStages.length - 2; i >= 0; i--) {
-            AssemblyStages[i+1] = AssemblyStages[i];
+        if (!stall) {
+            for (int i = AssemblyStages.length - 2; i >= 0; i--) {
+                AssemblyStages[i + 1] = AssemblyStages[i];
+            }
+            String temp = getAssembly(instruction);
+            AssemblyStages[0] = (checknop(temp) ? temp + " (NOP)" : temp);
         }
-        String temp = getAssembly(instruction);
-        AssemblyStages[0] = (checknop(temp)?temp+" (NOP)":temp);
+        else {
+            for (int i = AssemblyStages.length - 2; i >= 2; i--) {
+                AssemblyStages[i + 1] = AssemblyStages[i];
+            }
+            AssemblyStages[2] = "add $0, $0, $0 (NOP)";
+            stall = false;
+        }
     }
 
     /**

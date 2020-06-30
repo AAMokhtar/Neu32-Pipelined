@@ -56,7 +56,7 @@ public class Memory {
 		//do nothing
 		else if(memRead==0 && memWrite==0)
 		{
-			String readData = "00000000000000000000000000000000";
+			String readData = ALUres;
 			MEM_WB.write(readData, ALUres, rt, input);
 			print(ALUres, readData, input.get("rd"), input.get("MemToReg"), input.get("RegWrite"));
 		}

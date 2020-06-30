@@ -47,9 +47,4 @@ public class WriteBack {
 		if(!formatter.checknop(formatter.AssemblyStages[4]))
 			System.out.println("\t"+formatter.AssemblyStages[4] + " in WB stage\n");
 	}
-
-	public static void main(String[] args) {
-		for(int i=0;i<10;i++)
-			System.out.println((int)(Math.random()*2));
-	}
 }

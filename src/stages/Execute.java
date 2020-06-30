@@ -46,7 +46,7 @@ public class Execute {
              */
 
             //===Forwarding unit===
-            ForwardingUnit.setFlags(input.get("rs"),input.get("rt"),input.get("RegWrite"));
+            ForwardingUnit.setFlags(input.get("rs"),input.get("rt"),EX_MEM.WB_Control().get("RegWrite"),MEM_WB.regWrite());
 
             String ForwardA = ForwardingUnit.ForwardA;
             String ForwardB = ForwardingUnit.ForwardB;
@@ -57,12 +57,14 @@ public class Execute {
             String mux1 = (String) MUX.mux4in(ReadData1, EX_MEM.ALUResult(), MEM_WB.readData(),
                     ReadData1,ForwardA.charAt(0)+"",ForwardA.charAt(1)+"");
 
-            int operand1 = Integer.parseInt(mux1,2);
-
+            int operand1 = Integer.parseInt(mux1.substring(1),2);
+            if (mux1.charAt(0) == '1') operand1 *= -1;
 
             String mux2 = (String) MUX.mux4in(ReadData2, EX_MEM.ALUResult(),MEM_WB.readData(),
                     ReadData2,ForwardB.charAt(0)+"",ForwardB.charAt(1)+"");
-            int operand2 = Integer.parseInt(mux2,2);
+
+            int operand2 = Integer.parseInt(mux2.substring(1),2);
+            if (mux2.charAt(0) == '1') operand2 *= -1;
 
             int operand2ALT = operations.Complement(Immediate);
 
@@ -80,7 +82,7 @@ public class Execute {
 
         //================pass the outputs to the next stage==================
         EX_MEM.write(String.format("%32s", Integer.toBinaryString(ALUresult))
-                .replace(' ', '0'), ReadData2,ZFlag,input.get("rd"),input);
+                .replace(' ', '0'), mux2,ZFlag,input.get("rd"),input);
 
         //=====================print the required output======================
         printStage(ZFlag,input.get("BranchAddress"),String.format("%32s", Integer.toBinaryString(ALUresult))

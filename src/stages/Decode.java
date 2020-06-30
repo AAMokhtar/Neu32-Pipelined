@@ -33,7 +33,7 @@ public class Decode {
 
             String funct = instruction.substring(19);
 
-            HazardDetectionUnit.setFlags(rs, rt);
+            HazardDetectionUnit.setFlags(rs, rt,opCode.equals("0111") || opCode.equals("1000"));
         //======================control signals are NOP initially=======================
             Hashtable<String, String> control = new Hashtable<>();
             control.put("Branch","0");
@@ -99,12 +99,12 @@ public class Decode {
              */
 
             //===Forwarding unit===
-            //TODO: use the forwarding unit to update ForwardA and ForwardB (method call)
+            ForwardingUnit.setFlags(rs,rt,EX_MEM.WB_Control().get("RegWrite"),MEM_WB.regWrite());
             //===========use the forwarding unit to get the operands===========
-            //TODO: Data hazard. get the most recent values of rs,rt. (check previous comment)
+            //Data hazard: get the most recent values of rs,rt.
 
-            String ForwardA = "00" /*TODO: get signal from the forwarding unit*/;
-            String ForwardB = "00" /*TODO: get signal from the forwarding unit*/;
+            String ForwardA = ForwardingUnit.ForwardA;
+            String ForwardB = ForwardingUnit.ForwardB;
 
             String operand1 = (String) MUX.mux4in(values[0], EX_MEM.ALUResult(), MEM_WB.readData(),
                     values[0],ForwardA.charAt(0)+"",ForwardA.charAt(1)+"");
@@ -148,11 +148,11 @@ public class Decode {
              * locations in the ID/EX register. It simplifies the design.
              */
 
-            ID_EX.write(values[0], values[1], immediate,String.format("%32s", Integer.toBinaryString(branchAddress))
+            ID_EX.write(operand1, operand2, immediate,String.format("%32s", Integer.toBinaryString(branchAddress))
                     .replace(' ', '0'), rs, rt, rd, funct, control);
 
         //================================print the required output======================
-            printStage(values[0],values[1],immediate,input.get("PC"),rt,rd,control);
+            printStage(operand1,operand2,immediate,input.get("PC"),rt,rd,control);
     }
 
     public static void printStage(String read1,String read2, String SE, String pc,String rt

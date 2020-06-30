@@ -34,12 +34,12 @@ public class Cache {
 
 	public static String load(String address) throws DatapathException {
 		init();
-		int index=Integer.parseInt(address.substring(0, 7));
+		int index=Integer.parseInt(address.substring(0, 7),2);
 		String tag=address.substring(7);
 		//System.out.println(tag);
 		if(cells[0][index].equals("1")&&cells[1][index].equals(tag))
 		{
-			System.out.println("hit "+cells[2][index]);
+//			System.out.println("hit "+cells[2][index]);
 			return cells[2][index];
 		}
 		else
@@ -49,7 +49,7 @@ public class Cache {
 			cells[0][index]="1";
 			cells[1][index]=tag;
 			cells[2][index]=temp;
-			System.out.print("miss "+temp);
+//			System.out.print("miss "+temp);
 			return temp;
 		}
 
@@ -58,7 +58,7 @@ public class Cache {
 	{
 		//write here then write to memory
 		init();
-		int index=Integer.parseInt(address.substring(0, 7));
+		int index=Integer.parseInt(address.substring(0, 7),2);
 		String tag=address.substring(7);
 		cells[0][index]="1";
 		cells[1][index]=tag;
