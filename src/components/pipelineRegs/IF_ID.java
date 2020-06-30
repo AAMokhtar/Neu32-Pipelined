@@ -52,7 +52,7 @@ public class IF_ID {
     public static HashMap<String, String> read(){
 
         if (reverse){
-            reverse = false;
+            reverse = false; //if we don't write, we don't reverse
             return incoming;
         }
 
@@ -62,7 +62,6 @@ public class IF_ID {
 
     //write = store the output of IF in incoming (outgoing if the order is reversed)
     public static void write(String inst,int PC){
-        //stall if: IF_IDWrite = 0
 
             if (reverse) {
                 outgoing.put("Instruction", inst);
@@ -84,11 +83,6 @@ public class IF_ID {
         else outgoing.put("Instruction",String.format("%032d", 0));
 
         formatter.AssemblyStages[1] = "add $0, $0, $0 (NOP)";
-    }
-
-    public static void stall(){
-        reverse = !reverse;
-        formatter.stall = true;
     }
 
 

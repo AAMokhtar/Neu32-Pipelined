@@ -13,7 +13,7 @@ public class operations {
     public static int Complement(String Bin){
         StringBuilder res = new StringBuilder();
 
-        if (Bin.length() > 31 && Bin.charAt(0) == '1'){
+        if (Bin.charAt(0) == '1'){
             boolean flip = false;
 
             for (int i = Bin.length() - 1; i >= 0; i--) {

@@ -4,7 +4,6 @@ import components.*;
 import components.pipelineRegs.EX_MEM;
 import components.pipelineRegs.ID_EX;
 import components.pipelineRegs.IF_ID;
-import components.pipelineRegs.MEM_WB;
 import other.DatapathException;
 import other.formatter;
 import other.operations;
@@ -33,22 +32,9 @@ public class Decode {
 
             String funct = instruction.substring(19);
 
-            HazardDetectionUnit.setFlags(rs, rt,opCode.equals("0111") || opCode.equals("1000"));
-        //======================control signals are NOP initially=======================
-            Hashtable<String, String> control = new Hashtable<>();
-            control.put("Branch","0");
-            control.put("Jump","0");
-            control.put("DstReg","0");
-            control.put("ALUSrc","0");
-            control.put("ALUop","000");
-            control.put("MemRead","0");
-            control.put("MemWrite","0");
-            control.put("RegWrite","0");
-            control.put("MemToReg","0");
+        //======================get the control signals=======================
+            Hashtable<String, String> control = MainControl.controlSignals(opCode);
 
-        //=====set the controls according to the hazard detection unit's NOP signal=====
-            control = (Hashtable<String, String>) MUX.mux2in(MainControl.controlSignals(opCode),
-                       control,HazardDetectionUnit.NOP - '0');
 
         //======================get the correct destination register====================
             rd = (String) MUX.mux2in(rt,rd,control.get("DstReg").charAt(0) - '0');
@@ -80,29 +66,10 @@ public class Decode {
              * remaining 2 bits from the incremented PC's most left bits
              */
             String shiftedTarget = String.format("%30s", Integer.toBinaryString (Integer.parseInt(target,2) << 2))
-                .replace(' ', '0');
+                    .replace(' ', '0');
 
             int jumpAddress = Integer.parseInt(input.get("PC").substring(0,3) + shiftedTarget,2);
 
-
-
-        //======================Set the flags needed for branching=======================
-
-            int jumpAddress = Integer.parseInt(input.get("PC").substring(0,3) + shiftedTarget,2);
-
-            //===Forwarding unit===
-            ForwardingUnit.setFlags(rs,rt,EX_MEM.WB_Control().get("RegWrite"),MEM_WB.regWrite());
-            //===========use the forwarding unit to get the operands===========
-            //Data hazard: get the most recent values of rs,rt.
-
-            String ForwardA = ForwardingUnit.ForwardA;
-            String ForwardB = ForwardingUnit.ForwardB;
-
-            String operand1 = (String) MUX.mux4in(values[0], EX_MEM.ALUResult(), MEM_WB.readData(),
-                    values[0],ForwardA.charAt(0)+"",ForwardA.charAt(1)+"");
-
-            String operand2 = (String) MUX.mux4in(values[1], EX_MEM.ALUResult(),MEM_WB.readData(),
-                    values[1],ForwardB.charAt(0)+"",ForwardB.charAt(1)+"");
 
         //======================Set the flags needed for branching=======================
             //=======zero flag=======
@@ -141,11 +108,11 @@ public class Decode {
              * locations in the ID/EX register. It simplifies the design.
              */
 
-            ID_EX.write(operand1, operand2, immediate,String.format("%32s", Integer.toBinaryString(branchAddress))
-                    .replace(' ', '0'), rs, rt, rd, funct, control);
+            ID_EX.write(values[0], values[1], immediate,String.format("%32s", Integer.toBinaryString(branchAddress))
+                    .replace(' ', '0'), rd, funct, control);
 
         //================================print the required output======================
-            printStage(operand1,operand2,immediate,input.get("PC"),rt,rd,control);
+            printStage(values[0],values[1],immediate,input.get("PC"),rt,rd,control);
     }
 
     public static void printStage(String read1,String read2, String SE, String pc,String rt

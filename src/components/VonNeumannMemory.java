@@ -1,7 +1,6 @@
 package components;
 
 import other.DatapathException;
-import other.operations;
 
 import java.util.Arrays;
 
@@ -70,7 +69,7 @@ public class VonNeumannMemory {
 	//load
 	public static String load(String address) throws DatapathException {
 		//init();
-		int add=operations.Complement(address);
+		int add=Integer.parseInt(address, 2);
 		if(add>1023 && add < memory.length)
 		{
 			String result=memory[add];
@@ -86,9 +85,9 @@ public class VonNeumannMemory {
 	public static void store(String address,String data)
 	{
 		//init();
-		int add=operations.Complement(address);
+		int add=Integer.parseInt(address, 2);
 		//System.out.println(add);
-		if(add>1023 && add < memory.length)
+		if(add>1023)
 		{
 			String temp1=(String) data.subSequence(0,8);
 			String temp2=(String) data.subSequence(8,16);
